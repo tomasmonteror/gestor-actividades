@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .App {
   text-align: center;
 }
@@ -36,3 +40,94 @@
     transform: rotate(360deg);
   }
 }
+
+/* --- ESTILOS DE CSS PURO APLICADOS AQUÍ --- */
+
+/* Estilos personalizados para los botones de navegación del calendario */
+.calendar-nav-button {
+  background-color: #047857; /* Verde institucional */
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.calendar-nav-button:hover {
+  background-color: #065f46; /* Verde más oscuro al pasar el mouse */
+  transform: translateY(-1px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.calendar-nav-button:active {
+  background-color: #034d3a; /* Verde aún más oscuro al hacer clic */
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Botones de acción en las tarjetas de actividad */
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-decoration: none;
+}
+
+.action-btn svg {
+  pointer-events: none; /* evitar conflicto con el icono dentro */
+}
+
+/* Botón Editar */
+.edit-btn {
+  background-color: #3b82f6; /* azul */
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+}
+
+.edit-btn:active {
+  background-color: #1d4ed8;
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Botón Eliminar */
+.delete-btn {
+  background-color: #ef4444; /* rojo */
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+}
+
+.delete-btn:active {
+  background-color: #b91c1c;
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+/* --- FIN DE ESTILOS DE CSS PURO --- */

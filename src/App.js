@@ -199,11 +199,91 @@ function App() {
             <Route
               path="/"
               element={
-                <h2 className="text-2xl font-bold text-gray-800 text-center mt-6">
-                  Bienvenido a la gestión de actividades del instituto
-                </h2>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    minHeight: "100vh",
+                    textAlign: "center",
+                    background: "linear-gradient(135deg, #f0fdf4 0%,rgb(230, 252, 238) 100%)",
+                    borderRadius: "1rem",
+                    padding: "4rem 2rem",
+                  }}
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/3141/3141158.png"
+                    alt="Logo actividades"
+                    style={{
+                      width: "110px",
+                      height: "110px",
+                      marginBottom: "1rem",
+                      marginTop: "2rem",
+                    }}
+                  />
+                  <h1
+                    style={{
+                      fontSize: "2.2rem",
+                      fontWeight: "700",
+                      color: "#065f46",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    Bienvenido a Actividades IES
+                  </h1>
+                  <p
+                    style={{
+                      fontSize: "1.1rem",
+                      color: "#047857",
+                      maxWidth: "600px",
+                      marginBottom: "2rem",
+                    }}
+                  >
+                    Gestiona, organiza y consulta todas las actividades del instituto de forma sencilla y rápida.
+                  </p>
+                  <div style={{ display: "flex", gap: "1rem" }}>
+                    <NavLink
+                      to="/login"
+                      style={{
+                        backgroundColor: "#10b981",
+                        color: "white",
+                        padding: "0.75rem 1.5rem",
+                        borderRadius: "0.5rem",
+                        textDecoration: "none",
+                        fontWeight: "600",
+                        boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                        transition: "transform 150ms ease-in-out",
+                      }}
+                      onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+                      onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                    >
+                      Iniciar Sesión
+                    </NavLink>
+
+                    <NavLink
+                      to="/tablero"
+                      style={{
+                        backgroundColor: "#f9fafb",
+                        color: "#065f46",
+                        padding: "0.75rem 1.5rem",
+                        borderRadius: "0.5rem",
+                        textDecoration: "none",
+                        fontWeight: "600",
+                        boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                        transition: "transform 150ms ease-in-out",
+                      }}
+                      onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+                      onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                    >
+                      Ver Actividades
+                    </NavLink>
+                  </div>
+                </div>
               }
             />
+
+
             <Route path="/login" element={<Login />} />
             <Route
               path="/tablero"

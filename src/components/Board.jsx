@@ -1,211 +1,241 @@
+// src/components/Board.jsx
 import React from "react";
-import { Link } from 'react-router-dom';
-import { Clock, Users, MapPin, Edit, Trash2, Calendar } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Clock, Users, Edit, Trash2 } from 'lucide-react';
 
 const Board = ({
   actividades = [],
-  currentUser = null,         // Objeto de usuario autenticado
-  currentRole = null,         // Rol del usuario autenticado
+  currentUser = null,
+  currentRole = null,
   startOfWeekDate,
-  onEditActivity,             
-  onDeleteActivity,           
-  onViewDetails               
+  onEditActivity,
+  onDeleteActivity,
+  onViewDetails
 }) => {
   const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+  const navigate = useNavigate();
 
-  // 1. Agrupar y ordenar actividades
+  // Agrupar actividades por día
   const actividadesPorDia = dias.map(() => []);
-
   actividades.forEach(act => {
-    // Asegura que la actividad tenga una fecha ISO válida para evitar errores
     if (!act.inicio_iso) return;
-    
     const d = new Date(act.inicio_iso);
-    // 0=Lunes, 1=Martes, ..., 4=Viernes. Date.getDay() devuelve 0=Domingo, 1=Lunes, ...
-    const diaIndex = ((d.getDay() + 6) % 7); 
-
-    // Solo considera actividades de Lunes a Viernes (índices 0 a 4)
-    if (diaIndex >= 0 && diaIndex < 5) {
-      actividadesPorDia[diaIndex].push(act);
-    }
+    const diaIndex = ((d.getDay() + 6) % 7); // lunes=0
+    if (diaIndex >= 0 && diaIndex < 5) actividadesPorDia[diaIndex].push(act);
   });
 
-  // Función para renderizar el color de fondo basado en el rol del creador (teacherId)
-  const getActivityCardStyle = (act) => {
-    // Estilos de Tailwind (mantener por si se arregla la carga)
-    let tailwindClasses = "border p-3 rounded-xl shadow-md transition duration-150 ease-in-out cursor-pointer ";
-    let style = { 
-        backgroundColor: 'white', 
-        transition: 'all 150ms ease-in-out', 
-        borderRadius: '0.75rem', 
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06)',
-        cursor: 'pointer',
-        paddingLeft: '6px',
-        border: '1px solid #d1d5db' // gray-300
-    };
+  // Día actual
+const todayIndex = (() => {
+  const today = new Date();
+  today.setHours(0,0,0,0); // ignorar horas
+  for (let i = 0; i < 5; i++) {
+    const colDate = new Date(startOfWeekDate);
+    colDate.setDate(colDate.getDate() + i);
+    colDate.setHours(0,0,0,0);
+    if (colDate.getTime() === today.getTime()) return i;
+  }
+  return -1;
+})();
 
-    if (act.teacherId === currentUser?.uid && currentRole === 'teacher') {
-        style.borderLeft = '5px solid #10b981'; // Teal
-    } else if (currentRole === 'admin') {
-        style.borderLeft = '5px solid #ef4444'; // Red
-    } else {
-        style.borderLeft = '5px solid #818cf8'; // Indigo
-    }
-    
-    return { tailwindClasses, style };
+
+  const getActivityCardStyle = (act, idx) => {
+    return { 
+      backgroundColor: todayIndex === idx ? '#fffdf2' : 'white', // muy suave para día actual
+      transition: 'all 150ms ease-in-out', 
+      borderRadius: '0.75rem', 
+      boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.06)',
+      cursor: 'pointer',
+      padding: '6px',
+      marginBottom: '0.25rem', // 🔹 separación entre actividades
+      border: '1px solid #d1d5db',
+      borderLeft: act.teacherId === currentUser?.uid && currentRole === 'teacher' ? '5px solid #10b981'
+                 : currentRole === 'admin' ? '5px solid #ef4444'
+                 : '5px solid #818cf8'
+    };
   };
 
-  // Estilos fijos para la cuadrícula del tablero
   const boardGridStyle = {
-      display: 'grid',
-      // Forzamos 5 columnas con 1 rem de gap
-      gridTemplateColumns: 'repeat(5, 1fr)', 
-      gap: '1rem', 
-      width: '100%',
-      // Añadimos media queries para la responsividad directamente en el JS/CSS.
-      // Sin embargo, por simplicidad y dado que el entorno es React,
-      // forzamos 5 columnas y asumimos que el contenedor será lo suficientemente grande.
-      // Si el entorno no soporta el media query de Tailwind, este es el único camino.
-      '@media (max-width: 768px)': { 
-          gridTemplateColumns: 'repeat(1, 1fr)',
-      }
+    display: 'grid',
+    gridTemplateColumns: 'repeat(5, 1fr)',
+    gap: '1rem',
+    width: '100%'
   };
 
   return (
-    // Aseguramos que el contenedor use todo el espacio
-    <div className="p-4 sm:p-6 min-h-screen w-full mx-auto" style={{ fontFamily: 'Inter, sans-serif' }}> 
-        {/*<h2 className="text-3xl font-extrabold text-gray-800 mb-6 flex items-center">
-            <Calendar className="w-8 h-8 mr-3 text-teal-600"/> 
-            Tablero semanal
-        </h2>
-        */}
-        
-        {/* Contenedor del Tablero: Estilos de cuadrícula FORZADOS en línea */}
-        <div style={boardGridStyle}>
-            {dias.map((dia, idx) => (
-                <div 
-                    key={dia} 
-                    // Inyectamos estilos básicos de columna
-                    className="flex flex-col" 
-                    style={{ backgroundColor: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: '0.5rem', padding: '0.75rem', display: 'flex', flexDirection: 'column', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)', minHeight: '500px' }}
-                >
-                    <h4
-                    className="text-xl font-extrabold text-white"
+    <div className="p-4 sm:p-6 min-h-screen w-full mx-auto" style={{ fontFamily: 'Inter, sans-serif' }}>
+      <div style={boardGridStyle}>
+        {dias.map((dia, idx) => {
+          const isToday = idx === todayIndex;
+          return (
+            <div 
+              key={dia} 
+              className="flex flex-col"
+              style={{
+                backgroundColor: '#f3f4f6',
+                border: isToday ? '2px solid #f59e0b' : '1px solid #d1d5db',
+                borderRadius: '0.5rem',
+                padding: '0.75rem',
+                marginLeft: idx === 0 ? '0.5rem' : '0',       // separación izquierda en lunes
+                marginRight: idx === dias.length - 1 ? '0.5rem' : '0', // separación derecha en viernes
+                display: 'flex',
+                flexDirection: 'column',
+                boxShadow: isToday ? '0 0 10px rgba(0,0,0,0.1)' : '0 10px 15px -3px rgba(0,0,0,0.1)',
+                minHeight: '500px',
+                position: 'relative',
+                transition: 'all 150ms ease-in-out'
+              }}
+            >
+
+              {/* Encabezado día con símbolo + */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                {/* Encabezado día con símbolo + dentro del fondo */}
+                <h4 style={{
+                fontWeight: '800',
+                fontSize: '1.25rem',
+                color: isToday ? '#fffdf2' : 'white',
+                backgroundColor: '#047857',
+                borderRadius: '0.375rem',
+                padding: '0.5rem 0.75rem',
+                textAlign: 'center',
+                margin: 0,
+                marginBottom: '0.25rem',          // 🔹 reducir margen inferior
+                display: 'flex',
+                justifyContent: 'space-between',
+                flexGrow: 1,
+                alignItems: 'center',
+                width: '100%'                     // 🔹 ocupar todo el ancho de la columna
+                }}>
+                {(() => {
+                    const base = startOfWeekDate ? new Date(startOfWeekDate) : (() => {
+                    const d = new Date();
+                    d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+                    return d;
+                    })();
+                    const currentDate = new Date(base);
+                    currentDate.setDate(base.getDate() + idx);
+                    const month = currentDate.toLocaleString('es-ES', { month: 'short' });
+                    return `${dia} ${currentDate.getDate()} ${month}`;
+                })()}
+
+                {currentRole !== 'student' && (
+                    <Link
+                    to="/add-activity"
+                    state={{ preselectedDate: new Date(startOfWeekDate.getTime() + idx*24*60*60*1000) }}
                     style={{
-                        fontWeight: '800',
-                        fontSize: '1.25rem',
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: '50%',
+                        backgroundColor: '#0d9488',
                         color: 'white',
-                        backgroundColor: '#047857',
-                        borderRadius: '0.375rem',
-                        padding: '0.5rem 0.75rem',
-                        marginBottom: '0.75rem',
-                        textAlign: 'center',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        fontSize: '1.25rem',
+                        fontWeight: '700',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        textDecoration: 'none',
+                        cursor: 'pointer',
+                        transition: 'all 150ms ease-in-out',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                        marginLeft: '0.5rem'
                     }}
+                    onMouseOver={e => e.currentTarget.style.backgroundColor = '#0f766e'}
+                    onMouseOut={e => e.currentTarget.style.backgroundColor = '#0d9488'}
+                    title={`Añadir actividad para ${dia}`}
                     >
-                    {(() => {
-                        // Aseguramos crear una copia de la fecha base
-                        const base = startOfWeekDate ? new Date(startOfWeekDate) : (() => {
-                        // fallback: calcula el lunes de la semana actual
-                        const d = new Date();
-                        d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
-                        return d;
-                        })();
+                    +
+                    </Link>
+                )}
+                </h4>
 
-                        const currentDate = new Date(base);
-                        currentDate.setDate(base.getDate() + idx);
+              </div>
 
-                        const month = currentDate.toLocaleString('es-ES', { month: 'short' });
-                        return `${dia} ${currentDate.getDate()} ${month}`;
-                    })()}
-                    </h4>
-                    
-                    {actividadesPorDia[idx].length === 0 ? (
-                        <p className="text-gray-500 text-sm italic p-2 text-center flex-grow">Sin actividades previstas.</p>
-                    ) : (
-                        // Contenedor de actividades con scroll
-                        <div 
-                            className="flex flex-col space-y-3"
-                            style={{
-                                maxHeight: 'calc(100vh - 290px)', // ajusta 200px según encabezado/espacios superiores
-                                overflowY: 'auto',
-                                paddingRight: '4px',
-                            }}
-                        >
-                             {actividadesPorDia[idx]
-                                .sort((a,b) => new Date(a.inicio_iso).getTime() - new Date(b.inicio_iso).getTime())
-                                .map(act => {
-                                    const { tailwindClasses, style } = getActivityCardStyle(act);
-                                    const canEditOrDelete = currentUser && (
-                                        currentRole === 'admin' || 
-                                        (currentRole === 'teacher' && currentUser.uid === act.teacherId)
-                                    );
-                                    
-                                    return (
-                                        <div
-                                            key={act.id}
-                                            className={tailwindClasses}
-                                            style={style}
-                                            onClick={() => onViewDetails(act)}
-                                        >
-                                            <div style={{ fontWeight: '600', fontSize: '1rem', color: '#1f2937' }}>{act.titulo}</div>
-                                            
-                                            <div className="text-xs text-gray-600 space-y-1 mt-2">
-                                                {/* Hora y Duración */}
-                                                <div className="flex items-center">
-                                                    <Clock style={{ width: '12px', height: '12px', marginRight: '4px', color: '#047857' }} />
-                                                    {new Date(act.inicio_iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} 
-                                                    <span style={{ marginLeft: '8px', color: '#6b7280' }}>({act.duracion_min} min)</span>
-                                                </div>
+              {actividadesPorDia[idx].length === 0 ? (
+                <p className="text-gray-500 text-sm italic p-2 text-center flex-grow">Sin actividades previstas.</p>
+              ) : (
+                <div style={{ maxHeight: 'calc(100vh - 290px)', overflowY: 'auto', paddingRight: '4px' }}>
+                  {actividadesPorDia[idx]
+                    .sort((a,b) => new Date(a.inicio_iso).getTime() - new Date(b.inicio_iso).getTime())
+                    .map(act => {
+                      const style = getActivityCardStyle(act, idx);
+                      const canEditOrDelete = currentUser && (
+                        currentRole === 'admin' || 
+                        (currentRole === 'teacher' && currentUser.uid === act.teacherId)
+                      );
+                      return (
+                        <div key={act.id} style={style} onClick={() => onViewDetails(act)}>
+                          <div style={{ fontWeight: '600', fontSize: '1rem', color: '#1f2937' }}>{act.titulo}</div>
+                          <div className="text-xs text-gray-600 space-y-1 mt-2">
+                            <div className="flex items-center">
+                              <Clock style={{ width: '12px', height: '12px', marginRight: '4px', color: '#047857' }} />
+                              {new Date(act.inicio_iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} 
+                              <span style={{ marginLeft: '8px', color: '#6b7280' }}>({act.duracion_min} min)</span>
+                            </div>
+                            <div className="flex items-center">
+                              <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#4f46e5' }} />
+                              Grupo: {act.nombreGrupo || "N/A"}
+                            </div>
+                            <div className="flex items-center">
+                              <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#f59e0b' }} />
+                              Profesorado: {act.profesorAcompanante || act.teacherId || "N/A"}
+                            </div>
+                          </div>
 
-                                                {/* Grupo */}
-                                                <div className="flex items-center">
-                                                    <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#4f46e5' }} />
-                                                    Grupo: {act.nombreGrupo || "N/A"}
-                                                </div>
-
-                                                {/* Profesor */}
-                                                <div className="flex items-center">
-                                                    <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#f59e0b' }} />
-                                                    Profesorado: {act.profesorAcompanante || act.teacherId || "N/A"}
-                                                </div>
-
-                                                {/* Lugar 
-                                                <div className="flex items-center">
-                                                    <MapPin style={{ width: '12px', height: '12px', marginRight: '4px', color: '#dc2626' }} />
-                                                    Lugar: {act.nombreLugar || "N/A"}
-                                                </div>
-                                                */}
-                                            </div>
-
-                                            {/* Botones de Acción (Editar/Eliminar) */}
-                                            {canEditOrDelete && (
-                                                <div className="flex justify-end space-x-2 mt-3 pt-2 border-t border-gray-200" onClick={(e) => e.stopPropagation()}>
-                                                    <Link
-                                                        to={`/edit-activity/${act.id}`}
-                                                        className="p-1 rounded-full bg-blue-500 hover:bg-blue-600 text-white transition duration-150"
-                                                        title="Editar"
-                                                    >
-                                                        <Edit className="w-4 h-4" />
-                                                    </Link>
-                                                    <button
-                                                        onClick={() => onDeleteActivity(act.id)}
-                                                        className="p-1 rounded-full bg-red-500 hover:bg-red-600 text-white transition duration-150"
-                                                        title="Eliminar"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })
-                            }
+                          {canEditOrDelete && (
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '0.5rem' }} onClick={e => e.stopPropagation()}>
+                              <Link
+                                to={`/edit-activity/${act.id}`}
+                                style={{
+                                  width: '22px',
+                                  height: '22px',
+                                  borderRadius: '50%',
+                                  backgroundColor: '#22c55e',
+                                  color: 'white',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  cursor: 'pointer',
+                                  transition: 'all 150ms ease-in-out',
+                                  textDecoration: 'none'
+                                }}
+                                onMouseOver={e => e.currentTarget.style.backgroundColor = '#16a34a'}
+                                onMouseOut={e => e.currentTarget.style.backgroundColor = '#22c55e'}
+                                title="Editar"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Link>
+                              <button
+                                onClick={() => onDeleteActivity(act.id)}
+                                style={{
+                                  width: '22px',
+                                  height: '22px',
+                                  borderRadius: '50%',
+                                  backgroundColor: '#f87171',
+                                  color: 'white',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  cursor: 'pointer',
+                                  border: 'none',
+                                  transition: 'all 150ms ease-in-out'
+                                }}
+                                onMouseOver={e => e.currentTarget.style.backgroundColor = '#ef4444'}
+                                onMouseOut={e => e.currentTarget.style.backgroundColor = '#f87171'}
+                                title="Eliminar"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          )}
                         </div>
-                    )}
+                      );
+                    })
+                  }
                 </div>
-            ))}
-        </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

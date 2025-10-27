@@ -43,28 +43,33 @@ const Login = () => {
       else await login(email, password);
       navigate("/tablero");
     } catch (e) {
-      let newError = "";
-      switch (e.code) {
-        case "auth/invalid-email":
-          newError = "El formato del email no es válido.";
-          break;
-        case "auth/user-disabled":
-          newError = "Tu cuenta ha sido deshabilitada.";
-          break;
-        case "auth/user-not-found":
-        case "auth/wrong-password":
-          newError = "Email o contraseña incorrectos.";
-          break;
-        case "auth/email-already-in-use":
-          newError = "Este email ya está registrado.";
-          break;
-        case "auth/weak-password":
-          newError = "La contraseña debe tener al menos 6 caracteres.";
-          break;
-        default:
-          newError = `Error: ${e.message}`;
-      }
-      setError(newError);
+        let newError = "";
+        switch (e.code) {
+          case "auth/invalid-email":
+            newError = "El formato del email no es válido.";
+            break;
+          case "auth/user-disabled":
+            newError = "Tu cuenta ha sido deshabilitada.";
+            break;
+          case "auth/user-not-found":
+            newError = "El email no está registrado.";
+            break;
+          case "auth/wrong-password":
+            newError = "Contraseña incorrecta.";
+            break;
+          case "auth/email-already-in-use":
+            newError = "Este email ya está registrado.";
+            break;
+          case "auth/weak-password":
+            newError = "La contraseña debe tener al menos 6 caracteres.";
+            break;
+          case "auth/invalid-credential":
+            newError = "Email o contraseña incorrectos.";
+            break;
+          default:
+            newError = "Error al iniciar sesión. Revisa tus credenciales.";
+        }
+        setError(newError);
     } finally {
       setIsSubmitting(false);
     }

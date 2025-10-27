@@ -25,7 +25,7 @@ function formatToISO(local) {
   return d.toISOString();
 }
 
-const ActivityForm = ({ initial = {}, onSubmit }) => {
+const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
   const { currentUser, loading } = useAuth();
 
   const [titulo, setTitulo] = useState(initial.titulo || "");
@@ -33,27 +33,34 @@ const ActivityForm = ({ initial = {}, onSubmit }) => {
   const [nombreGrupo, setNombreGrupo] = useState(initial.nombreGrupo || "");
   const [profesorAcompanante, setProfesorAcompanante] = useState(initial.profesorAcompanante || "");
   const [nombreLugar, setNombreLugar] = useState(initial.nombreLugar || "");
-  const [inicio_iso, setInicioIso] = useState(initial.inicio_iso || "");
+  const [inicio_iso, setInicioIso] = useState("");
   const [duracion_min, setDuracionMin] = useState(initial.duracion_min ?? 60);
   const [estado, setEstado] = useState(initial.estado || "programada");
-  const [teacherId, setTeacherId] = useState(initial.teacherId || "");
+  const [teacherId, setTeacherId] = useState(initial.teacherId || currentUser?.uid || "");
   const [formError, setFormError] = useState("");
 
-  useEffect(() => {
-    if (initial && Object.keys(initial).length) {
-      setTitulo(initial.titulo || "");
-      setDescripcion(initial.descripcion || "");
-      setNombreGrupo(initial.nombreGrupo || "");
-      setProfesorAcompanante(initial.profesorAcompanante || "");
-      setNombreLugar(initial.nombreLugar || "");
-      setInicioIso(initial.inicio_iso || "");
-      setDuracionMin(initial.duracion_min ?? 60);
-      setEstado(initial.estado || "programada");
-      setTeacherId(initial.teacherId || "");
-    } else if (currentUser && !teacherId) {
-      setTeacherId(currentUser.uid);
-    }
-  }, [initial, currentUser, teacherId]);
+  // Cada vez que cambie initial o preselectedDate, actualizamos los estados
+useEffect(() => {
+  if (initial && Object.keys(initial).length) {
+    setTitulo(initial.titulo || "");
+    setDescripcion(initial.descripcion || "");
+    setNombreGrupo(initial.nombreGrupo || "");
+    setProfesorAcompanante(initial.profesorAcompanante || "");
+    setNombreLugar(initial.nombreLugar || "");
+    setInicioIso(initial.inicio_iso || "");
+    setDuracionMin(initial.duracion_min ?? 60);
+    setEstado(initial.estado || "programada");
+    setTeacherId(initial.teacherId || currentUser?.uid || "");
+  } else if (preselectedDate) {
+    const d = new Date(preselectedDate);
+    d.setHours(8, 30, 0, 0);
+    setInicioIso(d.toISOString());
+    setTeacherId(currentUser?.uid || "");
+  }
+}, [initial, preselectedDate, currentUser]);
+
+
+
 
   const submit = (e) => {
     e.preventDefault();

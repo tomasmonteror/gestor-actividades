@@ -277,18 +277,20 @@ useEffect(() => {
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "center",
           alignItems: "flex-end",
           borderTop: "1px solid #e5e7eb",
           paddingTop: "1.5rem",
         }}
       >
+        {/*
         {teacherId && (
           <p style={{ fontSize: "0.875rem", color: "#6b7280", fontStyle: "italic" }}>
             {initial.id ? "Creada por:" : "Asignada al UID:"}{" "}
             <span style={{ fontFamily: "monospace", color: "#4b5563", marginLeft: "0.5rem" }}>{teacherId}</span>
           </p>
         )}
+          */}
 
         <button
           type="submit"

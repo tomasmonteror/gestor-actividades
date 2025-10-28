@@ -94,10 +94,12 @@ const ActivityDetailModal = ({ activity, onClose }) => {
           <div style={detailRowStyle}>
             <Clock style={{ ...iconStyle, color: "#047857" }} />
             <span>
+              <strong>
               {new Date(activity.inicio_iso).toLocaleString("es-ES", {
                 dateStyle: "short",
                 timeStyle: "short",
               })}{" "}
+              </strong>
               — {activity.duracion_min} min
             </span>
           </div>
@@ -109,7 +111,7 @@ const ActivityDetailModal = ({ activity, onClose }) => {
 
           <div style={detailRowStyle}>
             <Tag style={{ ...iconStyle, color: "#0d9488" }} />
-            <span>Profesor acompañante: {activity.profesorAcompanante || "N/A"}</span>
+            <span>Profesorado acompañante: {activity.profesorAcompanante || "N/A"}</span>
           </div>
 
           <div style={detailRowStyle}>
@@ -117,10 +119,12 @@ const ActivityDetailModal = ({ activity, onClose }) => {
             <span>Lugar: {activity.nombreLugar || "N/A"}</span>
           </div>
 
+          {/*
           <div style={detailRowStyle}>
             <Info style={{ ...iconStyle, color: "#6366f1" }} />
             <span>Estado: {activity.estado || "Desconocido"}</span>
           </div>
+          */}
 
           {activity.descripcion && (
             <div

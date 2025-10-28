@@ -172,6 +172,7 @@ useEffect(() => {
             onChange={(e) => setTitulo(e.target.value)}
             placeholder="Nombre de la actividad (Ej: Visita al Museo de Ciencias)"
             required
+            maxLength={80}
             style={inputStyle}
           />
         </FormGroup>
@@ -182,6 +183,7 @@ useEffect(() => {
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
             placeholder="Detalles sobre el objetivo, materiales o planificación."
+            maxLength={250}
             style={{ ...inputStyle, minHeight: "80px" }}
           />
         </FormGroup>
@@ -203,6 +205,7 @@ useEffect(() => {
             value={nombreGrupo}
             onChange={(e) => setNombreGrupo(e.target.value)}
             placeholder="Ej: 1º Bach A, 3º ESO C"
+            maxLength={50}
             required
             style={inputStyle}
           />
@@ -215,6 +218,7 @@ useEffect(() => {
             value={profesorAcompanante}
             onChange={(e) => setProfesorAcompanante(e.target.value)}
             placeholder="Nombre del profesor acompañante"
+            maxLength={80}
             required
             style={inputStyle}
           />
@@ -227,6 +231,7 @@ useEffect(() => {
             value={nombreLugar}
             onChange={(e) => setNombreLugar(e.target.value)}
             placeholder="Ej: Aula 101, Salón de actos"
+            maxLength={50}
             required
             style={inputStyle}
           />

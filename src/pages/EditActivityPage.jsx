@@ -85,7 +85,7 @@ const EditActivityPage = () => {
 
     return (
         <div>
-            <h2>Editar Actividad: {activity.titulo}</h2>
+            {/*<h2 style={{ marginLeft: '2rem' }}>Editar Actividad: {activity.titulo}</h2> */}
             <ActivityForm
                 initial={activity}
                 onSubmit={handleUpdateSubmit}

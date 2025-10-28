@@ -39,7 +39,7 @@ const AddActivity = () => {
 
   return (
     <div>
-      <h2>Crear Nueva Actividad</h2>
+      {/*<h2 style={{ marginLeft: '2rem' }}>Crear Nueva Actividad</h2> */}
       <ActivityForm
         onSubmit={handleAddSubmit}
         preselectedDate={preselectedDate}  // ✅ aquí enviamos la fecha

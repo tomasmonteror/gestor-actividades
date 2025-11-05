@@ -12,7 +12,6 @@ const AddActivity = () => {
   const [pageLoading, setPageLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Recibimos la fecha preseleccionada del estado del Link (+)
   const preselectedDate = location.state?.preselectedDate
     ? new Date(location.state.preselectedDate)
     : null;
@@ -38,11 +37,21 @@ const AddActivity = () => {
   }
 
   return (
-    <div>
-      {/*<h2 style={{ marginLeft: '2rem' }}>Crear Nueva Actividad</h2> */}
+    <div
+      style={{
+        marginLeft: '2rem',
+        marginRight: '2rem',
+        marginTop: '1rem',
+        marginBottom: '2rem',
+        backgroundColor: 'white',
+        borderRadius: '0.75rem',
+        boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+        padding: '1.5rem',
+      }}
+    >
       <ActivityForm
         onSubmit={handleAddSubmit}
-        preselectedDate={preselectedDate}  // ✅ aquí enviamos la fecha
+        preselectedDate={preselectedDate}
       />
     </div>
   );

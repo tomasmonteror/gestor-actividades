@@ -180,6 +180,16 @@ function AppContent() {
           />
           <Route path="/request-password-reset" element={<PasswordResetRequestPage />} />
           <Route path="/confirm-password-reset" element={<PasswordResetConfirmPage />} />
+          <Route
+            path="/"
+            element={
+              currentUser ? (
+                <WeeklyCalendarPage />
+              ) : (
+                <Login />
+              )
+            }
+          />
         </Routes>
       </main>
     </div>

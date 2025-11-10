@@ -5,7 +5,7 @@ import './App.css';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/actividades/web">
       <AppContent />
     </Router>
   );

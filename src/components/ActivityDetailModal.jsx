@@ -75,6 +75,15 @@ const ActivityDetailModal = ({ activity, onClose }) => {
     textAlign: "right",
   };
 
+  // Opcional: calcula duración en minutos, para mostrarla como referencia adicional
+  const getDuration = () => {
+    if (!activity.inicio_iso || !activity.fin_iso) return "";
+    const start = new Date(activity.inicio_iso);
+    const end = new Date(activity.fin_iso);
+    const diffMin = Math.round((end - start) / 60000);
+    return diffMin > 0 ? `${diffMin} min` : "";
+  };
+
   return (
     <div style={overlayStyle} onClick={onClose}>
       <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
@@ -83,8 +92,8 @@ const ActivityDetailModal = ({ activity, onClose }) => {
           <button
             onClick={onClose}
             style={closeBtnStyle}
-            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#e5e7eb")}
-            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#f3f4f6")}
+            onMouseOver={e => (e.currentTarget.style.backgroundColor = "#e5e7eb")}
+            onMouseOut={e => (e.currentTarget.style.backgroundColor = "#f3f4f6")}
           >
             <X className="w-5 h-5 text-gray-700" />
           </button>
@@ -95,12 +104,32 @@ const ActivityDetailModal = ({ activity, onClose }) => {
             <Clock style={{ ...iconStyle, color: "#047857" }} />
             <span>
               <strong>
-              {new Date(activity.inicio_iso).toLocaleString("es-ES", {
-                dateStyle: "short",
-                timeStyle: "short",
-              })}{" "}
+                Inicio:&nbsp;
+                {activity.inicio_iso
+                  ? new Date(activity.inicio_iso).toLocaleString("es-ES", {
+                      dateStyle: "short",
+                      timeStyle: "short",
+                    })
+                  : "N/A"}
+                {"  |  Fin: "}
+                {activity.fin_iso
+                  ? new Date(activity.fin_iso).toLocaleTimeString("es-ES", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "N/A"}
+                {activity.inicio_iso && activity.fin_iso && (
+                  <span
+                    style={{
+                      marginLeft: "1rem",
+                      fontStyle: "italic",
+                      color: "#64748b",
+                    }}
+                  >
+                    ({getDuration()})
+                  </span>
+                )}
               </strong>
-              — {activity.duracion_min} min
             </span>
           </div>
 
@@ -111,7 +140,9 @@ const ActivityDetailModal = ({ activity, onClose }) => {
 
           <div style={detailRowStyle}>
             <Tag style={{ ...iconStyle, color: "#0d9488" }} />
-            <span>Profesorado acompañante: {activity.profesorAcompanante || "N/A"}</span>
+            <span>
+              Profesorado acompañante: {activity.profesorAcompanante || "N/A"}
+            </span>
           </div>
 
           <div style={detailRowStyle}>
@@ -119,13 +150,7 @@ const ActivityDetailModal = ({ activity, onClose }) => {
             <span>Lugar: {activity.nombreLugar || "N/A"}</span>
           </div>
 
-          {/*
-          <div style={detailRowStyle}>
-            <Info style={{ ...iconStyle, color: "#6366f1" }} />
-            <span>Estado: {activity.estado || "Desconocido"}</span>
-          </div>
-          */}
-
+          {/* Si quieres mostrar la descripción (si existe), descomenta esto */}
           {activity.descripcion && (
             <div
               style={{
@@ -141,6 +166,12 @@ const ActivityDetailModal = ({ activity, onClose }) => {
               {activity.descripcion}
             </div>
           )}
+
+          {/* Estado (opcional) */}
+          <div style={detailRowStyle}>
+            <Info style={{ ...iconStyle, color: "#6366f1" }} />
+            <span>Estado: {activity.estado || "Desconocido"}</span>
+          </div>
         </div>
 
         <div style={footerStyle}>
@@ -156,8 +187,8 @@ const ActivityDetailModal = ({ activity, onClose }) => {
               transition: "background-color 150ms ease-in-out",
               cursor: "pointer",
             }}
-            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#0f766e")}
-            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#0d9488")}
+            onMouseOver={e => (e.currentTarget.style.backgroundColor = "#0f766e")}
+            onMouseOut={e => (e.currentTarget.style.backgroundColor = "#0d9488")}
           >
             Cerrar
           </button>

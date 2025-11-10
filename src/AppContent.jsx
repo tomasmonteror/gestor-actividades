@@ -11,6 +11,7 @@ import PasswordResetConfirmPage from './pages/PasswordResetConfirmPage';
 import PrivateRoute from './components/PrivateRoute';
 import { useAuth } from './context/AuthContext';
 import { logout } from './firebase/auth';
+import logo from './assets/Logo.png'; // ← logo del centro
 
 function AppContent() {
   const { currentUser, currentRole, loading } = useAuth();
@@ -32,11 +33,28 @@ function AppContent() {
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "white",
-    padding: "1rem",
+    padding: "0.75rem 1.5rem",
     borderRadius: "0.75rem",
     boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
     fontFamily: "Inter, sans-serif",
     margin: "1rem",
+  };
+
+  const leftSectionStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "1rem",
+  };
+
+  const logoStyle = {
+    height: "50px",
+    width: "auto",
+  };
+
+  const titleStyle = {
+    fontWeight: "700",
+    fontSize: "1.1rem",
+    color: "#047857",
   };
 
   const menuLinksStyle = {
@@ -71,7 +89,15 @@ function AppContent() {
   return (
     <div className="font-sans min-h-screen bg-gray-50">
       <nav style={navStyle}>
+        {/* Logo + título */}
+        <div style={leftSectionStyle}>
+          <img src={logo} alt="Logo IES Augustóbriga" style={logoStyle} />
+          <span style={titleStyle}>GESTOR DE ACTIVIDADES</span>
+        </div>
+
+        {/* Menú */}
         <div style={menuLinksStyle}>
+          {location.pathname !== "/login" && (
           <NavLink
             to="/"
             style={({ isActive }) => ({
@@ -83,7 +109,7 @@ function AppContent() {
           >
             Inicio
           </NavLink>
-
+          )}
           {currentUser && currentRole && (
             <NavLink
               to="/tablero"
@@ -127,20 +153,42 @@ function AppContent() {
           )}
         </div>
 
-        {currentUser && (
-          <button
-            onClick={handleLogout}
-            style={{
-              backgroundColor: "#0d9488",
-              color: "white",
-              padding: "0.5rem 1rem",
-              borderRadius: "0.5rem",
-              fontWeight: "600",
-            }}
-          >
-            Cerrar sesión
-          </button>
-        )}
+        {/* Botón derecha: sólo cuando NO está en /login */}
+  {location.pathname !== "/login" && (
+    currentUser ? (
+      <button
+        onClick={handleLogout}
+        style={{
+          backgroundColor: "#0d9488",
+          color: "white",
+          padding: "0.5rem 1rem",
+          borderRadius: "0.5rem",
+          fontWeight: "600",
+        }}
+      >
+        Cerrar sesión
+      </button>
+    ) : (
+      <NavLink
+        to="/login"
+        style={{
+          backgroundColor: "#047857",
+          color: "white",
+          padding: "0.5rem 1rem",
+          borderRadius: "0.5rem",
+          fontWeight: "600",
+          textDecoration: "none",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.08)",
+          cursor: "pointer",
+        }}
+        onMouseOver={e => (e.currentTarget.style.backgroundColor = "#065f46")}
+        onMouseOut={e => (e.currentTarget.style.backgroundColor = "#047857")}
+      >
+        Iniciar sesión
+      </NavLink>
+    )
+  )}
+
       </nav>
 
       <main className="p-4 sm:p-6">
@@ -149,9 +197,9 @@ function AppContent() {
           <Route
             path="/tablero"
             element={
-              <PrivateRoute>
+              
                 <WeeklyCalendarPage />
-              </PrivateRoute>
+              
             }
           />
           <Route

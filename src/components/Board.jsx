@@ -167,9 +167,11 @@ const todayIndex = (() => {
                           <div className="text-xs text-gray-600 space-y-1 mt-2">
                             <div className="flex items-center">
                               <Clock style={{ width: '12px', height: '12px', marginRight: '4px', color: '#047857' }} />
-                              {new Date(act.inicio_iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} 
-                              <span style={{ marginLeft: '8px', color: '#6b7280' }}>({act.duracion_min} min)</span>
+                              {new Date(act.inicio_iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}
+                              {" - "}
+                              {new Date(act.fin_iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}
                             </div>
+
                             <div className="flex items-center">
                               <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#4f46e5' }} />
                               Grupo: {act.nombreGrupo || "N/A"}

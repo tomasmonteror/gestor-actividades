@@ -177,6 +177,10 @@ const todayIndex = (() => {
                               Grupo: {act.nombreGrupo || "N/A"}
                             </div>
                             <div className="flex items-center">
+                              <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#f50b3eff' }} />
+                              Departamento: {act.departamento || act.teacherId || "N/A"}
+                            </div>
+                            <div className="flex items-center">
                               <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#f59e0b' }} />
                               Profesorado: {act.profesorAcompanante || act.teacherId || "N/A"}
                             </div>

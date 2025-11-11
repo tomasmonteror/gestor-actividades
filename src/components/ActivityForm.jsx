@@ -35,6 +35,7 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
   const [titulo, setTitulo] = useState(initial.titulo || "");
   const [descripcion, setDescripcion] = useState(initial.descripcion || "");
   const [nombreGrupo, setNombreGrupo] = useState(initial.nombreGrupo || "");
+  const [departamento, setDepartamento] = useState(initial.departamento || "");
   const [profesorAcompanante, setProfesorAcompanante] = useState(
     initial.profesorAcompanante || ""
   );
@@ -54,6 +55,7 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
       setTitulo(initial.titulo || "");
       setDescripcion(initial.descripcion || "");
       setNombreGrupo(initial.nombreGrupo || "");
+      setDepartamento(initial.departamento || "");
       setProfesorAcompanante(initial.profesorAcompanante || "");
       setNombreLugar(initial.nombreLugar || "");
       setEstado(initial.estado || "visada");
@@ -94,6 +96,8 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
     if (!titulo.trim()) return setFormError("El título de la actividad es obligatorio.");
     if (!nombreGrupo.trim())
       return setFormError("El campo Grupo es obligatorio.");
+    if (!departamento.trim()) 
+      return setFormError("Debe indicar el departamento organizador.");
     if (!profesorAcompanante.trim())
       return setFormError("Debe indicar el profesor o profesores acompañantes.");
     if (!nombreLugar.trim())
@@ -113,6 +117,7 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
       titulo: titulo.trim(),
       descripcion: descripcion.trim(),
       nombreGrupo: nombreGrupo.trim(),
+      departamento: departamento.trim(),
       profesorAcompanante: profesorAcompanante.trim(),
       nombreLugar: nombreLugar.trim(),
       inicio_iso,
@@ -233,15 +238,17 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
         />
       </FormGroup>
         */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-          gap: "1.5rem",
-          borderTop: "1px solid #e5e7eb",
-          paddingTop: "1.5rem",
-        }}
-      >
+         <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            columnGap: "2rem",  // separación horizontal
+            rowGap: "1.25rem",  // separación vertical
+            borderTop: "1px solid #e5e7eb",
+            paddingTop: "1.5rem",
+          }}
+        >
+
         <FormGroup label="Grupo(s)" icon={Users} htmlFor="nombreGrupo">
           <input
             id="nombreGrupo"
@@ -254,6 +261,20 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
           />
         </FormGroup>
 
+      <FormGroup label="Departamento Organizador" icon={Tag} htmlFor="departamento">
+        <input
+          id="departamento"
+          type="text"
+          value={departamento}
+          onChange={(e) => setDepartamento(e.target.value)}
+          placeholder="Ej: Inglés, Lengua, Tecnología..."
+          maxLength={80}
+          required
+          style={inputStyle}
+        />
+      </FormGroup>
+
+
         <FormGroup
           label="Profesorado acompañante"
           icon={Tag}
@@ -265,7 +286,7 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
             value={profesorAcompanante}
             onChange={(e) => setProfesorAcompanante(e.target.value)}
             placeholder="Nombre del profesor"
-            required
+            
             style={inputStyle}
           />
         </FormGroup>
@@ -343,6 +364,7 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
         style={{
           display: "flex",
           justifyContent: "center",
+          gap: "2.5rem",
           borderTop: "1px solid #e5e7eb",
           paddingTop: "1.5rem",
         }}
@@ -366,6 +388,25 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
           }
         >
           Guardar Actividad
+        </button>
+
+        <button
+          type="button"
+          onClick={() => window.history.back()}
+          style={{
+            backgroundColor: "#e5e7eb",
+            color: "#374151",
+            fontWeight: "600",
+            padding: "0.5rem 1.5rem",
+            borderRadius: "0.5rem",
+            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+            cursor: "pointer",
+            transition: "background-color 150ms ease-in-out",
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#d1d5db")}
+          onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#e5e7eb")}
+        >
+          Cancelar
         </button>
       </div>
     </form>

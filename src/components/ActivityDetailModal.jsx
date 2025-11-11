@@ -139,6 +139,13 @@ const ActivityDetailModal = ({ activity, onClose }) => {
           </div>
 
           <div style={detailRowStyle}>
+            <Tag style={{ ...iconStyle, color: "#f1b253ff" }} />
+            <span>
+              Departamento organizador: {activity.departamento || "N/A"}
+            </span>
+          </div>
+
+          <div style={detailRowStyle}>
             <Tag style={{ ...iconStyle, color: "#0d9488" }} />
             <span>
               Profesorado acompañante: {activity.profesorAcompanante || "N/A"}

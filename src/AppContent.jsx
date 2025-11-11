@@ -153,41 +153,62 @@ function AppContent() {
           )}
         </div>
 
-        {/* Botón derecha: sólo cuando NO está en /login */}
-  {location.pathname !== "/login" && (
-    currentUser ? (
-      <button
-        onClick={handleLogout}
-        style={{
-          backgroundColor: "#0d9488",
-          color: "white",
-          padding: "0.5rem 1rem",
-          borderRadius: "0.5rem",
-          fontWeight: "600",
-        }}
-      >
-        Cerrar sesión
-      </button>
-    ) : (
-      <NavLink
-        to="/login"
-        style={{
-          backgroundColor: "#047857",
-          color: "white",
-          padding: "0.5rem 1rem",
-          borderRadius: "0.5rem",
-          fontWeight: "600",
-          textDecoration: "none",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.08)",
-          cursor: "pointer",
-        }}
-        onMouseOver={e => (e.currentTarget.style.backgroundColor = "#065f46")}
-        onMouseOut={e => (e.currentTarget.style.backgroundColor = "#047857")}
-      >
-        Iniciar sesión
-      </NavLink>
-    )
-  )}
+      {/* Usuario logueado o botón de login */}
+      {location.pathname !== "/login" && (
+        currentUser ? (
+          <div style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
+            <div style={{ textAlign: "right" }}>
+              <span style={{ fontWeight: "600", color: "#047857" }}>
+                {currentUser.displayName || currentUser.email}
+              </span>
+              <br />
+              <span style={{ fontSize: "0.85rem", color: "#6b7280" }}>
+                {currentRole === "admin"
+                  ? "Administrador"
+                  : currentRole === "teacher"
+                  ? "Profesor"
+                  : "Invitado"}
+              </span>
+            </div>
+
+            <button
+              onClick={handleLogout}
+              style={{
+                backgroundColor: "#0d9488",
+                color: "white",
+                padding: "0.5rem 1rem",
+                borderRadius: "0.5rem",
+                fontWeight: "600",
+                boxShadow: "0 4px 6px rgba(0,0,0,0.08)",
+                cursor: "pointer",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#0f766e")}
+              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#0d9488")}
+            >
+              Cerrar sesión
+            </button>
+          </div>
+        ) : (
+          <NavLink
+            to="/login"
+            style={{
+              backgroundColor: "#047857",
+              color: "white",
+              padding: "0.5rem 1rem",
+              borderRadius: "0.5rem",
+              fontWeight: "600",
+              textDecoration: "none",
+              boxShadow: "0 4px 6px rgba(0,0,0,0.08)",
+              cursor: "pointer",
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#065f46")}
+            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#047857")}
+          >
+            Iniciar sesión
+          </NavLink>
+        )
+      )}
+
 
       </nav>
 

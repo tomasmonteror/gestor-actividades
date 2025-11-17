@@ -92,4 +92,10 @@ export const updateUserRole = async (uid, newRole) => {
 };
 
 
+export const deleteUser = async (userId) => {
+  await deleteDoc(doc(db, "usuarios", userId));
+};
+
+
+
 export default db;

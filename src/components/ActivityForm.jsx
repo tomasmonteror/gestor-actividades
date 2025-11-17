@@ -98,8 +98,8 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
       return setFormError("El campo Grupo es obligatorio.");
     if (!departamento.trim()) 
       return setFormError("Debe indicar el departamento organizador.");
-    if (!profesorAcompanante.trim())
-      return setFormError("Debe indicar el profesor o profesores acompañantes.");
+    //if (!profesorAcompanante.trim())
+    //  return setFormError("Debe indicar el profesor o profesores acompañantes.");
     if (!nombreLugar.trim())
       return setFormError("El lugar de la actividad es obligatorio.");
     if (!fecha) return setFormError("Debe especificar una fecha de realización.");

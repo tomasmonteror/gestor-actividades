@@ -27,9 +27,10 @@ export const getUserRole = async (user) => { // <-- Cambiado para recibir el obj
   } else {
     // Si el documento NO existe (posiblemente un usuario nuevo que acaba de registrarse),
     // lo crea con un rol por defecto 'teacher'.
-    console.warn(`No se encontró el documento de usuario para UID: ${user.uid}. Creando con rol por defecto 'student'.`);
+    console.warn(`No se encontró el documento de usuario para UID: ${user.uid}. Creando con rol por defecto 'student' 
+      (Invitado).`);
     // Asegurarse de que el email esté disponible.
-    await setDoc(userRef, { role: 'teacher', email: user.email || 'unknown' });
+    await setDoc(userRef, { role: 'student', email: user.email || 'unknown' });
     return 'estudiante';
   }
 };
@@ -46,7 +47,7 @@ export const register = async (email, password) => {
     // ANTES de que cualquier otra lectura intente acceder a él.
     await setDoc(doc(db, "usuarios", user.uid), {
         email: user.email,
-        role: "teacher", // Rol por defecto al registrarse
+        role: "student", // ROL POR DEFECTO al registrarse
         createdAt: new Date()
     }, { merge: true }); // Usamos merge:true por si ya existiera el documento con algun dato.
 

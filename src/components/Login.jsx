@@ -135,12 +135,12 @@ const Login = () => {
                 marginBottom: "0.25rem",
               }}
             >
-              <Mail size={16} color="#0d9488" style={{ marginRight: "0.5rem" }} /> Email
+              <Mail size={16} color="#0d9488" style={{ marginRight: "0.5rem" }} /> E-mail
             </label>
             <input
               id="email"
               type="email"
-              placeholder="tu.email@instituto.edu"
+              placeholder="tu.email@educarex.es"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isSubmitting}

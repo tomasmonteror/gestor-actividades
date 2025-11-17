@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext.js'; 
-import { getUsers, updateUserRole } from '../firebase/firestore.js'; 
+import { getUsers, updateUserRole, deleteUser } from '../firebase/firestore.js'; 
 import { useNavigate } from 'react-router-dom';
 
 const UserManagementPage = () => {
@@ -90,6 +90,20 @@ const UserManagementPage = () => {
       setSavingRole(null);
     }
   };
+
+  const handleDeleteUser = async (userId, email) => {
+  if (!window.confirm(`¿Seguro que deseas eliminar al usuario ${email}?`)) return;
+
+  try {
+    await deleteUser(userId);
+    setUsers((prev) => prev.filter((u) => u.id !== userId));
+    alert(`Usuario ${email} eliminado correctamente.`);
+  } catch (err) {
+    console.error("Error al eliminar usuario:", err);
+    alert("Error al eliminar usuario.");
+  }
+};
+
 
   if (authLoading || pageLoading) {
     return (
@@ -214,6 +228,25 @@ const UserManagementPage = () => {
                       Guardando...
                     </span>
                   )}
+
+                  <button
+                    onClick={() => handleDeleteUser(user.id, user.email)}
+                    disabled={user.role === 'admin'}
+                    style={{
+                      padding: "0.3rem 0.6rem",
+                      marginLeft: "0.6rem",
+                      backgroundColor: user.role === "admin" ? "#9ca3af" : "#d64242",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "0.5rem",
+                      fontSize: "0.8rem",
+                      cursor: user.role === "admin" ? "not-allowed" : "pointer",
+                      opacity: user.role === "admin" ? 0.6 : 1,
+                    }}
+                  >
+                    Eliminar
+                  </button>
+
                 </td>
               </tr>
             ))}

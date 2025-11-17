@@ -25,7 +25,8 @@ const PrivateRoute = ({ children, requiredRoles }) => {
       // Redirigir a una página de "Acceso Denegado" o a la página principal
       // Depende de tu lógica. Aquí redirigimos al tablero principal y mostramos un mensaje.
       // Podrías tener una página específica como /unauthorized
-      alert("No tienes permiso para acceder a esta página."); // Podrías usar un Toast/Notification
+      alert("No tienes permiso para crear actividades. Habla con Tomás para que te cambie a rol Profesor."); 
+      // Podrías usar un Toast/Notification
       return <Navigate to="/tablero" replace />;
     }
   }

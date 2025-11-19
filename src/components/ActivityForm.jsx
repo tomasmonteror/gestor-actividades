@@ -44,6 +44,7 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
   const [horaInicio, setHoraInicio] = useState("");
   const [horaFin, setHoraFin] = useState("");
   const [estado, setEstado] = useState(initial.estado || "visada");
+  const [initialized, setInitialized] = useState(false);
   const [teacherId, setTeacherId] = useState(
     initial.teacherId || currentUser?.uid || ""
   );
@@ -51,6 +52,8 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
   const [horaFinManual, setHoraFinManual] = useState(false);
 
   useEffect(() => {
+    if (initialized) return; // Así sólo pasamos por aquí una vez
+
     if (initial && Object.keys(initial).length) {
       setTitulo(initial.titulo || "");
       setDescripcion(initial.descripcion || "");
@@ -75,10 +78,13 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
       d.setHours(8, 30, 0, 0);
       setFecha(d.toISOString().split("T")[0]);
       setHoraInicio("08:30");
-      setHoraFin("09:30");
+      setHoraFin("14:30");
       setTeacherId(currentUser?.uid || "");
     }
-  }, [initial, preselectedDate, currentUser]);
+
+    setInitialized(true);
+  }, [initial, preselectedDate, currentUser, initialized]);
+
 
   // Cuando se cambia la hora de inicio, ajusta la hora de fin +1h (si no se tocó manualmente)
   useEffect(() => {

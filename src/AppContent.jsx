@@ -36,8 +36,7 @@ function AppContent() {
     padding: "0.75rem 1.5rem",
     borderRadius: "0.75rem",
     boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
-    fontFamily: "Inter, sans-serif",
-    margin: "1rem",
+    fontFamily: "Inter, sans-serif"
   };
 
   const leftSectionStyle = {
@@ -47,7 +46,7 @@ function AppContent() {
   };
 
   const logoStyle = {
-    height: "50px",
+    height: "60px",
     width: "auto",
   };
 

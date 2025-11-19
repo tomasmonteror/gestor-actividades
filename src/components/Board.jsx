@@ -72,7 +72,7 @@ const todayIndex = (() => {
               className="flex flex-col"
               style={{
                 backgroundColor: '#f3f4f6',
-                border: isToday ? '2px solid #f59e0b' : '1px solid #d1d5db',
+                border: isToday ? '3px solid #f59e0b' : '1px solid #d1d5db',
                 borderRadius: '0.5rem',
                 padding: '0.75rem',
                 marginLeft: idx === 0 ? '0.5rem' : '0',       // separación izquierda en lunes
@@ -91,8 +91,8 @@ const todayIndex = (() => {
                 {/* Encabezado día con símbolo + dentro del fondo */}
                 <h4 style={{
                 fontWeight: '800',
-                fontSize: '1.25rem',
-                color: isToday ? '#fffdf2' : 'white',
+                fontSize: '1.35rem',
+                color: 'white',
                 backgroundColor: '#047857',
                 borderRadius: '0.375rem',
                 padding: '0.5rem 0.75rem',
@@ -150,7 +150,7 @@ const todayIndex = (() => {
               </div>
 
               {actividadesPorDia[idx].length === 0 ? (
-                <p className="text-gray-500 text-sm italic p-2 text-center flex-grow">Sin actividades previstas.</p>
+                <p style={{ fontSize: '1.1rem', textAlign:'center'}}>Sin actividades previstas.</p>
               ) : (
                 <div style={{ maxHeight: 'calc(100vh - 290px)', overflowY: 'auto', paddingRight: '4px' }}>
                   {actividadesPorDia[idx]
@@ -163,25 +163,26 @@ const todayIndex = (() => {
                       );
                       return (
                         <div key={act.id} style={style} onClick={() => onViewDetails(act)}>
-                          <div style={{ fontWeight: '600', fontSize: '1rem', color: '#1f2937' }}>{act.titulo}</div>
-                          <div className="text-xs text-gray-600 space-y-1 mt-2">
-                            <div className="flex items-center">
+                          <div style={{ fontWeight: '600', fontSize: '1.05rem', color: '#1f2937', 
+                            paddingBottom:'0.2rem' }}>{act.titulo}</div>
+                          <div style={{ fontSize: '1.05rem' }}>
+                            <div >
                               <Clock style={{ width: '12px', height: '12px', marginRight: '4px', color: '#047857' }} />
                               {new Date(act.inicio_iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}
                               {" - "}
                               {new Date(act.fin_iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}
                             </div>
 
-                            <div className="flex items-center">
+                            <div >
                               <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#4f46e5' }} />
                               Grupo: {act.nombreGrupo || "N/A"}
                             </div>
-                            <div className="flex items-center">
+                            <div >
                               <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#f50b3eff' }} />
                               Departamento: {act.departamento || act.teacherId || "N/A"}
                             </div>
                             {act.profesorAcompanante && act.profesorAcompanante.trim() !== "" && (
-                              <div className="flex items-center">
+                              <div >
                                 <Users
                                   style={{
                                     width: '12px',
@@ -196,7 +197,7 @@ const todayIndex = (() => {
                           </div>
 
                           {canEditOrDelete && (
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '0.5rem' }} onClick={e => e.stopPropagation()}>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '0.2rem' }} onClick={e => e.stopPropagation()}>
                               <Link
                                 to={`/edit-activity/${act.id}`}
                                 style={{

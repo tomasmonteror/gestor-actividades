@@ -52,7 +52,7 @@ function AppContent() {
 
   const titleStyle = {
     fontWeight: "700",
-    fontSize: "1.1rem",
+    fontSize: "1.3rem",
     color: "#047857",
   };
 

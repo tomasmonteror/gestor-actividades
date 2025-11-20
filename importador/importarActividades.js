@@ -3,7 +3,7 @@ const admin = require("firebase-admin");
 
 // Inicializa Firebase Admin SDK
 admin.initializeApp({
-  credential: admin.credential.cert(require("./firebase-service-account.json")),
+  credential: admin.credential.cert(require("/home/tmr/gestion-actividades/importador/firebase-service-account.json")),
 });
 const db = admin.firestore();
 
@@ -26,7 +26,7 @@ function convHora(horaExcel) {
 
 async function importarDeHoja() {
   const auth = new google.auth.GoogleAuth({
-    keyFile: "credentials.json",
+    keyFile: "/home/tmr/gestion-actividades/importador/credentials.json",
     scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
   });
 

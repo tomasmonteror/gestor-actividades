@@ -10,7 +10,6 @@ import {
   Type,
   Loader,
   AlertTriangle,
-  ListChecks,
   Info,
 } from "lucide-react";
 

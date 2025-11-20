@@ -9,8 +9,8 @@ const AddActivity = () => {
   const location = useLocation();
   const { loading: authLoading } = useAuth();
 
-  const [pageLoading, setPageLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [pageLoading] = useState(false);
+  const [error] = useState(null);
 
   const preselectedDate = location.state?.preselectedDate
     ? new Date(location.state.preselectedDate)

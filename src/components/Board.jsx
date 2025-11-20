@@ -1,6 +1,6 @@
 // src/components/Board.jsx
 import React from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Clock, Users, Edit, Trash2 } from 'lucide-react';
 
 const Board = ({
@@ -13,8 +13,7 @@ const Board = ({
   onViewDetails
 }) => {
   const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
-  const navigate = useNavigate();
-
+  
   // Agrupar actividades por día
   const actividadesPorDia = dias.map(() => []);
   actividades.forEach(act => {

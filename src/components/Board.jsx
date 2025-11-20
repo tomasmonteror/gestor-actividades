@@ -179,7 +179,7 @@ const todayIndex = (() => {
                             </div>
                             <div >
                               <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#f50b3eff' }} />
-                              Departamento: {act.departamento || act.teacherId || "N/A"}
+                              Dpto: {act.departamento || act.teacherId || "N/A"}
                             </div>
                             {act.profesorAcompanante && act.profesorAcompanante.trim() !== "" && (
                               <div >
@@ -191,7 +191,7 @@ const todayIndex = (() => {
                                     color: '#f59e0b'
                                   }}
                                 />
-                                Profesorado: {act.profesorAcompanante}
+                                Profs: {act.profesorAcompanante}
                               </div>
                             )}
                           </div>

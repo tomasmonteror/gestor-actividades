@@ -29,7 +29,7 @@ function generarAutorizacionPDF({
     
     // Inserta la imagen vertical en el margen izquierdo
     try {
-    doc.image("vertical.png", 35, 68, { width: 75 });
+    doc.image("./img/vertical.png", 35, 68, { width: 75 });
     } catch (e) {
     console.log("No se pudo cargar vertical.png");
     }
@@ -38,7 +38,7 @@ function generarAutorizacionPDF({
 
     // Cabecera
     try {
-      doc.image("logo-centro.png", 30, 1, { width: 85 });
+      doc.image("./img/logo-centro.png", 30, 1, { width: 85 });
     } catch (e) {}
 
     doc.font("Helvetica-Bold").fontSize(10);

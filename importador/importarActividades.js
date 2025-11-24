@@ -2,6 +2,7 @@ const { google } = require("googleapis");
 const admin = require("firebase-admin");
 
 const generarAutorizacionPDF = require("./generarAutorizacion");
+const generarAnexoPDF = require("./generarAnexo");
 const enviarEmailConPDF = require("./enviarEmail");
 
 // Inicializa Firebase Admin SDK
@@ -109,9 +110,11 @@ async function importarDeHoja() {
         id: newDoc.id,
         titulo,
         departamento,
+        nombreGrupo: grupos,
         nombreLugar: lugar,
         inicio_iso: inicioIso,
         fin_iso: finIso,
+        profesorAcompanante: profesorAcompanante,
         coste: costeActividad,
         emailOrganizador
       });
@@ -126,10 +129,11 @@ async function importarDeHoja() {
 
 async function procesarNuevaActividad(actividad) {
   
-  // Ruta donde guardar el PDF
-  const pdfFile = `/opt/importador-actividades/autorizaciones/${actividad.id}.pdf`;
+  // Ruta donde guardar los PDF
+  const autorizacionPdfFile = `/opt/importador-actividades/autorizaciones/${actividad.titulo}-autorizacion.pdf`;
+  const anexoPdfFile = `/opt/importador-actividades/anexosI/${actividad.titulo}-anexoI.pdf`;
   
-  // Generar PDF
+  // Generar autorización en PDF
   generarAutorizacionPDF({
     titulo: actividad.titulo,
     departamento: actividad.departamento,
@@ -142,13 +146,31 @@ async function procesarNuevaActividad(actividad) {
       hour: "2-digit", minute: "2-digit"
     }),
     coste: actividad.coste || "0",
-    salida: pdfFile
+    salida: autorizacionPdfFile
+  });
+
+  // Generar anexo en PDF
+  generarAnexoPDF({
+    titulo: actividad.titulo,
+    departamento: actividad.departamento,
+    lugar: actividad.nombreLugar,
+    grupos: actividad.nombreGrupo,
+    fecha: new Date(actividad.inicio_iso).toLocaleDateString("es-ES"),
+    horaInicio: new Date(actividad.inicio_iso).toLocaleTimeString("es-ES", {
+      hour: "2-digit", minute: "2-digit"
+    }),
+    horaFin: new Date(actividad.fin_iso).toLocaleTimeString("es-ES", {
+      hour: "2-digit", minute: "2-digit"
+    }),
+    profesorAcompanante: actividad.profesorAcompanante,
+    coste: actividad.coste || "0",
+    salida: anexoPdfFile
   });
 
   // Enviar email al organizador
   await enviarEmailConPDF({
     emailOrganizador: actividad.emailOrganizador,
-    pdfPath: pdfFile
+    pdfPaths: [autorizacionPdfFile, anexoPdfFile]
   });
 
 }

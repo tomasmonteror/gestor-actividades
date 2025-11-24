@@ -28,9 +28,9 @@ async function enviarEmailConPDF({ emailOrganizador, pdfPaths }) {
     from: '"IES Augustóbriga" <tmonteror04@educarex.es>',
     to: emailOrganizador,
     subject: "IES Augustóbriga - Organización de nueva actividad.",
-    text: `Buenos días.
+    text: `    Buenos días.
 
-    Se ha dado de alta una nueva actividad complementaria o extraescolar. 
+    Se ha dado de alta una nueva actividad extraescolar o complementaria.
     Para facilitar la gestión administrativa, se adjunta la autorización lista para imprimir y repartir entre el alumnado. También se adjunta el Anexo I que se debe terminar de cumplimentar.
 
     Un saludo.`,

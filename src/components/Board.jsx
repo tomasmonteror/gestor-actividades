@@ -2,6 +2,7 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 import { Clock, UserCheck, ArrowBigRightDash, Users, Edit, Trash2 } from 'lucide-react';
+import { useEffect } from "react";
 
 const Board = ({
   actividades = [],
@@ -36,20 +37,27 @@ const todayIndex = (() => {
   return -1;
 })();
 
+useEffect(() => {
+  window.scrollTo({
+    top: 300,   // ← cambia este número a lo que necesites
+    behavior: "smooth"
+  });
+}, [actividades]);
 
   const getActivityCardStyle = (act, idx) => {
 
     // Colores según tipo
     const typeColors = {
-      complementaria: '#dbeafe', // azul
-      profesorado: '#dcfce7',    // verde
-      academica: '#fee2e2'       // rojo
+      complementaria: '#ffffffff', // blanco
+      profesorado: '#dbeafe',    // azul
+      academica: '#fee2e2',       // rojo
+      otros: '#f4e3ffff' // morado
     };
 
     const fondoTipo = typeColors[act.tipo] || 'white';
     
     return { 
-      backgroundColor: todayIndex === idx ? '#fffdf2' : fondoTipo, // muy suave para día actual
+      backgroundColor: fondoTipo,
       transition: 'all 150ms ease-in-out', 
       borderRadius: '0.75rem', 
       boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.06)',
@@ -99,19 +107,20 @@ const todayIndex = (() => {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                 {/* Encabezado día con símbolo + dentro del fondo */}
                 <h4 style={{
-                fontWeight: '800',
-                fontSize: '1.35rem',
+                fontWeight: '700',
+                fontSize: '1.25rem',
                 color: 'white',
                 backgroundColor: '#047857',
                 borderRadius: '0.375rem',
-                padding: '0.5rem 0.75rem',
+                padding: '0.3rem 0.75rem',
                 textAlign: 'center',
                 margin: 0,
                 marginBottom: '0.25rem',          // 🔹 reducir margen inferior
                 display: 'flex',
-                justifyContent: 'space-between',
+                justifyContent: 'center',
                 flexGrow: 1,
                 alignItems: 'center',
+                position: 'relative',
                 width: '100%'                     // 🔹 ocupar todo el ancho de la columna
                 }}>
                 {(() => {
@@ -128,7 +137,7 @@ const todayIndex = (() => {
                     return `${dia} ${currentDate.getDate()}`;
                 })()}
 
-                {currentRole !== 'student' && (
+                {currentUser && currentRole !== 'student' && (
                     <Link
                     to="/add-activity"
                     state={{ preselectedDate: new Date(startOfWeekDate.getTime() + idx*24*60*60*1000) }}
@@ -163,7 +172,13 @@ const todayIndex = (() => {
               {actividadesPorDia[idx].length === 0 ? (
                 <p style={{ fontSize: '1.1rem', textAlign:'center'}}>Sin actividades previstas.</p>
               ) : (
-                <div style={{ maxHeight: 'calc(100vh - 290px)', overflowY: 'auto', paddingRight: '4px' }}>
+                <div style={{
+                    flexGrow: 1,
+                    overflowY: "auto",
+                    paddingRight: "4px",
+                    minHeight: 0
+                  }}
+                  >
                   {actividadesPorDia[idx]
                     .sort((a,b) => new Date(a.inicio_iso).getTime() - new Date(b.inicio_iso).getTime())
                     .map(act => {

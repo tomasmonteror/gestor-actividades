@@ -1,6 +1,6 @@
 // src/components/ActivityDetailModal.jsx
 import React from "react";
-import { X, Clock, Users, MapPin, Tag, Info } from "lucide-react";
+import { X, Clock, Users, MapPin, ArrowBigRightDash, Tag, Info } from "lucide-react";
 
 const ActivityDetailModal = ({ activity, onClose }) => {
   if (!activity) return null;
@@ -80,8 +80,8 @@ const ActivityDetailModal = ({ activity, onClose }) => {
     if (!activity.inicio_iso || !activity.fin_iso) return "";
     const start = new Date(activity.inicio_iso);
     const end = new Date(activity.fin_iso);
-    const diffMin = Math.round((end - start) / 60000);
-    return diffMin > 0 ? `${diffMin} min` : "";
+    const diffHoras = Math.round((end - start) / (1000 * 60 * 60));
+    return diffHoras > 0 ? `${diffHoras.toFixed(1)} horas` : "";
   };
 
   return (
@@ -113,9 +113,11 @@ const ActivityDetailModal = ({ activity, onClose }) => {
                   : "N/A"}
                 {"  |  Fin: "}
                 {activity.fin_iso
-                  ? new Date(activity.fin_iso).toLocaleTimeString("es-ES", {
-                      hour: "2-digit",
-                      minute: "2-digit",
+                  ? new Date(activity.fin_iso).toLocaleString("es-ES", {
+                      dateStyle: "short",
+                      timeStyle: "short",  
+                    //hour: "2-digit",
+                      //minute: "2-digit",
                     })
                   : "N/A"}
                 {activity.inicio_iso && activity.fin_iso && (
@@ -139,14 +141,14 @@ const ActivityDetailModal = ({ activity, onClose }) => {
           </div>
 
           <div style={detailRowStyle}>
-            <Tag style={{ ...iconStyle, color: "#f1b253ff" }} />
+            <Tag style={{ ...iconStyle, color: "#0d9488" }} />
             <span>
               Departamento organizador: {activity.departamento || "N/A"}
             </span>
           </div>
 
           <div style={detailRowStyle}>
-            <Tag style={{ ...iconStyle, color: "#0d9488" }} />
+            <ArrowBigRightDash style={{ ...iconStyle, color: "#f1b253ff" }} />
             <span>
               Profesorado acompañante: {activity.profesorAcompanante || "N/A"}
             </span>
@@ -157,7 +159,13 @@ const ActivityDetailModal = ({ activity, onClose }) => {
             <span>Lugar: {activity.nombreLugar || "N/A"}</span>
           </div>
 
-          {/* Si quieres mostrar la descripción (si existe), descomenta esto */}
+          {/* Tipo */}
+          <div style={detailRowStyle}>
+            <Info style={{ ...iconStyle, color: "#6366f1" }} />
+            <span>Tipo: {activity.tipo || "Desconocido"}</span>
+          </div>
+
+          {/* Sólo muestra la descripción si existe */}
           {activity.descripcion && (
             <div
               style={{
@@ -174,11 +182,7 @@ const ActivityDetailModal = ({ activity, onClose }) => {
             </div>
           )}
 
-          {/* Estado (opcional) */}
-          <div style={detailRowStyle}>
-            <Info style={{ ...iconStyle, color: "#6366f1" }} />
-            <span>Estado: {activity.estado || "Desconocido"}</span>
-          </div>
+          
         </div>
 
         <div style={footerStyle}>

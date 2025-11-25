@@ -45,8 +45,7 @@ const AddActivity = () => {
         marginBottom: '2rem',
         backgroundColor: 'white',
         borderRadius: '0.75rem',
-        boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-        padding: '1.5rem',
+        boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
       }}
     >
       <ActivityForm

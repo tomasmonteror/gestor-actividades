@@ -39,8 +39,9 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
     initial.profesorAcompanante || ""
   );
   const [nombreLugar, setNombreLugar] = useState(initial.nombreLugar || "");
-  const [fecha, setFecha] = useState("");
+  const [fechaInicio, setFechaInicio] = useState("");
   const [horaInicio, setHoraInicio] = useState("");
+  const [fechaFin, setFechaFin] = useState("");
   const [horaFin, setHoraFin] = useState("");
   const [tipo, setTipo] = useState(initial.tipo || "complementaria");
   const [initialized, setInitialized] = useState(false);
@@ -65,18 +66,20 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
 
       if (initial.inicio_iso) {
         const { date, time } = extractDateAndTime(initial.inicio_iso);
-        setFecha(date);
+        setFechaInicio(date);
         setHoraInicio(time);
       }
       if (initial.fin_iso) {
-        const { time } = extractDateAndTime(initial.fin_iso);
+        const { date, time } = extractDateAndTime(initial.fin_iso);
+        setFechaFin(date);
         setHoraFin(time);
       }
     } else if (preselectedDate) {
       const d = new Date(preselectedDate);
       d.setHours(8, 30, 0, 0);
-      setFecha(d.toISOString().split("T")[0]);
+      setFechaInicio(d.toISOString().split("T")[0]);
       setHoraInicio("08:30");
+      setFechaFin(d.toISOString().split("T")[0]);
       setHoraFin("14:30");
       setTeacherId(currentUser?.uid || "");
     }
@@ -94,6 +97,18 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
     setHoraFin(`${String(endH).padStart(2, "0")}:${String(endM).padStart(2, "0")}`);
   }, [horaInicio, horaFinManual]);
 
+  // Cuando cambia la fecha de inicio, si no ha tocado manualmente la fecha de fin, copiarla
+  useEffect(() => {
+    if (!fechaInicio) return;
+    if (!fechaFin) {
+      setFechaFin(fechaInicio);
+      return;
+    }
+    // Si quieres que SIEMPRE copie automáticamente:
+    // setFechaFin(fechaInicio);
+  }, [fechaInicio]);
+
+
   const submit = (e) => {
     e.preventDefault();
     setFormError("");
@@ -107,7 +122,7 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
     //  return setFormError("Debe indicar el profesor o profesores acompañantes.");
     if (!nombreLugar.trim())
       return setFormError("El lugar de la actividad es obligatorio.");
-    if (!fecha) return setFormError("Debe especificar una fecha de realización.");
+    if (!fechaInicio) return setFormError("Debe especificar una fecha de inicio.");
     if (!horaInicio)
       return setFormError("Debe indicar una hora de inicio.");
     if (!horaFin)
@@ -115,8 +130,8 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
     if (!teacherId)
       return setFormError("Error de autenticación: No se pudo determinar el ID del profesor.");
 
-    const inicio_iso = combineDateAndTime(fecha, horaInicio);
-    const fin_iso = combineDateAndTime(fecha, horaFin);
+    const inicio_iso = combineDateAndTime(fechaInicio, horaInicio);
+    const fin_iso = combineDateAndTime(!fechaFin? fechaInicio: fechaFin, horaFin);
 
     const actividad = {
       titulo: titulo.trim(),
@@ -188,7 +203,7 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
         borderRadius: "0.75rem",
         boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
         fontFamily: "Inter, sans-serif",
-        marginTop: "0.2rem",
+        marginTop: "-0.2rem",
       }}
     >
       <h2
@@ -308,12 +323,12 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
           />
         </FormGroup>
 
-        <FormGroup label="Fecha de realización" icon={Calendar} htmlFor="fecha">
+        <FormGroup label="Fecha de inicio" icon={Calendar} htmlFor="fechaInicio">
           <input
-            id="fecha"
+            id="fechaInicio"
             type="date"
-            value={fecha}
-            onChange={(e) => setFecha(e.target.value)}
+            value={fechaInicio}
+            onChange={(e) => setFechaInicio(e.target.value)}
             required
             style={inputStyle}
           />
@@ -332,12 +347,19 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
             style={inputStyle}
           />
         </FormGroup>
+        
+        <FormGroup label="Fecha de finalización" icon={Calendar} htmlFor="fechaFin">
+          <input
+            id="fechaFin"
+            type="date"
+            value={fechaFin}
+            onChange={(e) => setFechaFin(e.target.value)}
+            required
+            style={inputStyle}
+          />
+        </FormGroup>
 
-        <FormGroup
-          label="Hora de finalización"
-          icon={Clock}
-          htmlFor="horaFin"
-        >
+        <FormGroup label="Hora de finalización" icon={Clock} htmlFor="horaFin">
           <input
             id="horaFin"
             type="time"
@@ -361,9 +383,35 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
             <option value="complementaria">Complementaria</option>
             <option value="profesorado">Órganos colegiados</option>
             <option value="academica">Académico-administrativa</option>
+            <option value="otros">Otros</option>
           </select>
         </FormGroup>
       </div>
+
+<div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            columnGap: "2rem",  // separación horizontal
+            rowGap: "1.25rem",  // separación vertical
+            borderTop: "1px solid #e5e7eb",
+            paddingTop: "1.5rem",
+          }}
+          >
+      <FormGroup label="Descripción" htmlFor="descripcion" icon={Info}>
+        <textarea
+          id="descripcion"
+          value={descripcion}
+          onChange={(e) => setDescripcion(e.target.value)}
+          placeholder="Detalles, notas o información adicional"
+          style={{
+            ...inputStyle,
+            minHeight: "70px",
+            resize: "vertical"
+          }}
+        />
+      </FormGroup>
+</div>
 
       <div
         style={{

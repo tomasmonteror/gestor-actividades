@@ -173,16 +173,18 @@ function AppContent() {
             <button
               onClick={handleLogout}
               style={{
-                backgroundColor: "#0d9488",
-                color: "white",
+                backgroundColor: "white",
+                marginRight: "10px",
+                color: "#047857",
                 padding: "0.5rem 1rem",
                 borderRadius: "0.5rem",
                 fontWeight: "600",
                 boxShadow: "0 4px 6px rgba(0,0,0,0.08)",
                 cursor: "pointer",
+                border: "1px solid #047857"
               }}
-              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#0f766e")}
-              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#0d9488")}
+              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#d9fcf2ff")}
+              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "white")}
             >
               Cerrar sesión
             </button>
@@ -191,17 +193,19 @@ function AppContent() {
           <NavLink
             to="/login"
             style={{
-              backgroundColor: "#047857",
-              color: "white",
+              backgroundColor: "white",
+              marginRight: "10px",
+              color: "#047857",
               padding: "0.5rem 1rem",
               borderRadius: "0.5rem",
               fontWeight: "600",
               textDecoration: "none",
               boxShadow: "0 4px 6px rgba(0,0,0,0.08)",
               cursor: "pointer",
+              border: "1px solid #047857"
             }}
-            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#065f46")}
-            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#047857")}
+            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#d9fcf2ff")}
+            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "white")}
           >
             Iniciar sesión
           </NavLink>

@@ -112,7 +112,7 @@ const WeeklyCalendarPage = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <button className="calendar-nav-button" onClick={goToPreviousWeek}>&lt; Semana Anterior</button>
         <h2>Semana: {currentWeekDisplay}</h2>
         <button className="calendar-nav-button" onClick={goToNextWeek}>Semana Siguiente &gt;</button>

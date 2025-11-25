@@ -42,7 +42,7 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
   const [fecha, setFecha] = useState("");
   const [horaInicio, setHoraInicio] = useState("");
   const [horaFin, setHoraFin] = useState("");
-  const [estado, setEstado] = useState(initial.estado || "visada");
+  const [tipo, setTipo] = useState(initial.tipo || "complementaria");
   const [initialized, setInitialized] = useState(false);
   const [teacherId, setTeacherId] = useState(
     initial.teacherId || currentUser?.uid || ""
@@ -60,7 +60,7 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
       setDepartamento(initial.departamento || "");
       setProfesorAcompanante(initial.profesorAcompanante || "");
       setNombreLugar(initial.nombreLugar || "");
-      setEstado(initial.estado || "visada");
+      setTipo(initial.tipo || "complementaria");
       setTeacherId(initial.teacherId || currentUser?.uid || "");
 
       if (initial.inicio_iso) {
@@ -127,7 +127,7 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
       nombreLugar: nombreLugar.trim(),
       inicio_iso,
       fin_iso,
-      estado,
+      tipo,
       teacherId,
     };
 
@@ -351,16 +351,16 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
           />
         </FormGroup>
 
-        <FormGroup label="Estado" icon={Info} htmlFor="estado">
+        <FormGroup label="Tipo" icon={Info} htmlFor="tipo">
           <select
-            id="estado"
-            value={estado}
-            onChange={(e) => setEstado(e.target.value)}
+            id="tipo"
+            value={tipo}
+            onChange={(e) => setTipo(e.target.value)}
             style={{ ...inputStyle, appearance: "none" }}
           >
-            <option value="visada">Visada</option>
-            <option value="en_curso">En curso</option>
-            <option value="finalizada">Finalizada</option>
+            <option value="complementaria">Complementaria</option>
+            <option value="profesorado">Órganos colegiados</option>
+            <option value="academica">Académico-administrativa</option>
           </select>
         </FormGroup>
       </div>

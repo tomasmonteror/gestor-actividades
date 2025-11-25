@@ -1,7 +1,7 @@
 // src/components/Board.jsx
 import React from "react";
 import { Link } from 'react-router-dom';
-import { Clock, Users, Edit, Trash2 } from 'lucide-react';
+import { Clock, UserCheck, ArrowBigRightDash, Users, Edit, Trash2 } from 'lucide-react';
 
 const Board = ({
   actividades = [],
@@ -38,8 +38,18 @@ const todayIndex = (() => {
 
 
   const getActivityCardStyle = (act, idx) => {
+
+    // Colores según tipo
+    const typeColors = {
+      complementaria: '#dbeafe', // azul
+      profesorado: '#dcfce7',    // verde
+      academica: '#fee2e2'       // rojo
+    };
+
+    const fondoTipo = typeColors[act.tipo] || 'white';
+    
     return { 
-      backgroundColor: todayIndex === idx ? '#fffdf2' : 'white', // muy suave para día actual
+      backgroundColor: todayIndex === idx ? '#fffdf2' : fondoTipo, // muy suave para día actual
       transition: 'all 150ms ease-in-out', 
       borderRadius: '0.75rem', 
       boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.06)',
@@ -112,8 +122,10 @@ const todayIndex = (() => {
                     })();
                     const currentDate = new Date(base);
                     currentDate.setDate(base.getDate() + idx);
-                    const month = currentDate.toLocaleString('es-ES', { month: 'short' });
-                    return `${dia} ${currentDate.getDate()} ${month}`;
+                    //const month = currentDate.toLocaleString('es-ES', { month: 'short' });
+                    //return `${dia} ${currentDate.getDate()} ${month}`;
+                    // Se muestra sólo el día
+                    return `${dia} ${currentDate.getDate()}`;
                 })()}
 
                 {currentRole !== 'student' && (
@@ -174,15 +186,18 @@ const todayIndex = (() => {
 
                             <div >
                               <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#4f46e5' }} />
-                              Grupo: {act.nombreGrupo || "N/A"}
+                              {/* Grupo: */}
+                              {act.nombreGrupo || "N/A"}
                             </div>
-                            <div >
+                            {/*<div >
                               <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#f50b3eff' }} />
-                              Dpto: {act.departamento || act.teacherId || "N/A"}
+                               Departamento: 
+                              {act.departamento || act.teacherId || "N/A"}
                             </div>
+                            */}
                             {act.profesorAcompanante && act.profesorAcompanante.trim() !== "" && (
                               <div >
-                                <Users
+                                <ArrowBigRightDash
                                   style={{
                                     width: '12px',
                                     height: '12px',
@@ -190,7 +205,8 @@ const todayIndex = (() => {
                                     color: '#f59e0b'
                                   }}
                                 />
-                                Profs: {act.profesorAcompanante}
+                                {/* Profesorado: */}
+                                {act.profesorAcompanante}
                               </div>
                             )}
                           </div>

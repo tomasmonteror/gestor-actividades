@@ -33,7 +33,7 @@ function AppContent() {
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "white",
-    padding: "0.75rem 1.5rem",
+    padding: "0.25rem 0.2rem",
     borderRadius: "0.75rem",
     boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
     fontFamily: "Inter, sans-serif"
@@ -51,8 +51,8 @@ function AppContent() {
   };
 
   const titleStyle = {
-    fontWeight: "700",
-    fontSize: "1.3rem",
+    fontWeight: "650",
+    fontSize: "1.2rem",
     color: "#047857",
   };
 

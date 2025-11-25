@@ -169,8 +169,8 @@ async function procesarNuevaActividad(actividad) {
 
   // Enviar email al organizador
   await enviarEmailConPDF({
-    emailOrganizador: actividad.emailOrganizador,
-    pdfPaths: [autorizacionPdfFile, anexoPdfFile]
+    emailOrganizador: actividad.emailOrganizador
+    //, pdfPaths: [autorizacionPdfFile, anexoPdfFile]
   });
 
 }

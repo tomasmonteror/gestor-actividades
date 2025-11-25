@@ -34,7 +34,7 @@ function generarAnexo({
 
   // Imagen esquina superior derecha
   try {
-    doc.image("./img/junta.png", 400, 20, { width: 150 });
+    doc.image("/opt/importador-actividades/img/junta.png", 400, 20, { width: 150 });
   } catch (err) {
     console.log("No se pudo cargar la imagen adjunta");
   }
@@ -125,7 +125,7 @@ function generarAnexo({
   doc.moveDown(2.5);
 
   // Inspectora
-  doc.text(`DÑA. LAURA DEL CASTILLO BLANCO – INSPECTORA DE EDUCACIÓN`, { align: "center" });
+  doc.text(`DÑA. FÁTIMA MURCIANO RUBIA – INSPECTORA DE EDUCACIÓN`, { align: "center" });
   doc.font("Helvetica")
      .text("DELEGACIÓN PROVINCIAL DE EDUCACIÓN - CÁCERES", { align: "center" });
 

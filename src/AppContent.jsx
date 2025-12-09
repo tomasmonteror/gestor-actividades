@@ -12,6 +12,7 @@ import PrivateRoute from './components/PrivateRoute';
 import { useAuth } from './context/AuthContext';
 import { logout } from './firebase/auth';
 import logo from './assets/Logo.png'; // ← logo del centro
+import DailyCarouselPage from './pages/DailyCarouselPage';
 
 function AppContent() {
   const { currentUser, currentRole, loading } = useAuth();
@@ -123,6 +124,20 @@ function AppContent() {
             </NavLink>
           )}
 
+          {currentUser && currentRole && (
+            <NavLink
+              to="/carrusel"
+              style={({ isActive }) => ({
+                ...linkStyle,
+                ...(isActive ? activeLinkStyle : {}),
+              })}
+              onMouseOver={linkHover}
+              onMouseOut={linkLeave}
+            >
+              Carrusel diario
+            </NavLink>
+          )}
+
           {currentUser && (currentRole === "admin" || currentRole === "teacher") && (
             <NavLink
               to={isEditPage ? location.pathname : "/add-activity"}
@@ -226,6 +241,14 @@ function AppContent() {
               
             }
           />
+          <Route
+            path="/carrusel"
+            element={
+              
+                <DailyCarouselPage />
+              
+            }
+          />          
           <Route
             path="/add-activity"
             element={

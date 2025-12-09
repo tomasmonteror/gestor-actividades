@@ -141,6 +141,8 @@ const DailyCarousel = ({
             flexDirection: "column",
             minHeight: isActive ? "500px" : "250px",
             zIndex: isActive ? 2 : 1,
+            marginLeft: idx === 0 ? "4px" : 0,
+            marginRight: idx === 4 ? "4px" : 0,
           }}
         >
             <div

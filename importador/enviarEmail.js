@@ -26,7 +26,7 @@ async function enviarEmail({ emailOrganizador, titulo }) {
     text: `    Buenos días.
 
     Se ha dado de alta en el Gestor de actividades una nueva actividad extraescolar o complementaria con título ${titulo}. 
-    A partir de ahora estará disponible en http://reservas/actividades/web/tablero y se visualizará en la TV de la sala de profesores cuando estemos en la semana de su realización.
+    A partir de ahora estará disponible, dentro de la red Educarex, en http://reservas/actividades/web/tablero. Además, se visualizará en la TV de la sala de profesores cuando estemos en la semana de su realización.
     
     Un saludo.`
   };

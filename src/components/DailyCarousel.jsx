@@ -1,6 +1,6 @@
 // src/components/DailyCarousel.jsx
 import React, { useEffect, useMemo, useState } from "react";
-import { Clock, UserCheck, ArrowBigRightDash, Users, Edit, Trash2 } from 'lucide-react';
+import { Clock, ArrowBigRightDash, Users } from 'lucide-react';
 
 function getStartOfWeek(date) {
   const d = new Date(date);
@@ -34,7 +34,32 @@ const DailyCarousel = ({
   currentRole = null,
   onViewDetails,
 }) => {
-  const [activeIndex, setActiveIndex] = useState(2); // índice del día principal (0–4)
+  // Semana base
+  const baseWeekStart = weekStartDate || getStartOfWeek(new Date());
+
+  // Índice del día actual dentro de la semana (0–4, o 0 si ya ha pasado toda la semana)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const todayIndex = (() => {
+    for (let i = 0; i < 5; i++) {
+      const d = new Date(baseWeekStart);
+      d.setDate(d.getDate() + i);
+      if (
+        d.getFullYear() === today.getFullYear() &&
+        d.getMonth() === today.getMonth() &&
+        d.getDate() === today.getDate()
+      ) {
+        return i;
+      }
+    }
+    // Si hoy está fuera de esta semana, por ejemplo fin de semana,
+    // puedes fijar 0 (lunes) o dejar 2 (miércoles); aquí elegimos 0.
+    return 0;
+  })();
+
+  // Estado: empieza en el día actual
+  const [activeIndex, setActiveIndex] = useState(todayIndex);
 
   const activitiesByDay = useMemo(() => {
     const map = {};
@@ -55,8 +80,7 @@ const DailyCarousel = ({
   }, [activities]);
 
   const getDateForColumn = (index) => {
-    const base = weekStartDate || getStartOfWeek(new Date());
-    const d = new Date(base);
+    const d = new Date(baseWeekStart);
     d.setDate(d.getDate() + index);
     return d;
   };
@@ -67,12 +91,27 @@ const DailyCarousel = ({
     return activitiesByDay[key] || [];
   };
 
+  // Rotación solo entre hoy y los días siguientes de la semana
   useEffect(() => {
     const timer = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % 5);
+      setActiveIndex((prev) => {
+        // rango permitido: [todayIndex, 4]
+        if (prev < todayIndex || prev > 4) {
+          return todayIndex;
+        }
+        if (prev === 4) {
+          // si estaba en viernes, vuelve al día de hoy
+          return todayIndex;
+        }
+        // si está entre todayIndex y jueves, avanza uno
+        const next = prev + 1;
+        return next < todayIndex ? todayIndex : next;
+      });
     }, 12000);
+
     return () => clearInterval(timer);
-  }, []);
+  }, [todayIndex, baseWeekStart]);
+
 
   const getActivityCardStyle = (act, isActive) => {
     const typeColors = {
@@ -228,17 +267,19 @@ const DailyCarousel = ({
                           <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#4f46e5' }} />
                           {act.nombreGrupo || "N/A"}
                         </div>
-                        <div>
-                          <ArrowBigRightDash
-                            style={{
-                                width: '12px',
-                                height: '12px',
-                                marginRight: '4px',
-                                color: '#f59e0b'
-                            }}
-                          />
-                          {act.profesorAcompanante || "—"}
-                        </div>
+                        {!!(act.profesorAcompanante && act.profesorAcompanante.trim()) && (
+                          <div>
+                            <ArrowBigRightDash
+                              style={{
+                                width: "12px",
+                                height: "12px",
+                                marginRight: "4px",
+                                color: "#f59e0b",
+                              }}
+                            />
+                            {act.profesorAcompanante}
+                          </div>
+                        )}
                       </div>
                     </div>
                   );

@@ -41,7 +41,6 @@ const DailyCarouselPage = () => {
     fechaInicioISO,
     fechaFinISO,
     currentWeekDisplay,
-    initialCenterDate,
     weekStartDate,
   } = useMemo(() => {
     const startOfWeek = getStartOfWeek(new Date(currentWeekDate));
@@ -63,7 +62,6 @@ const DailyCarouselPage = () => {
       fechaInicioISO: startOfWeek.toISOString(),
       fechaFinISO: endOfWeek.toISOString(),
       currentWeekDisplay: `${startDay} ${startMonth} - ${endDay} ${endMonth} ${year}`,
-      initialCenterDate: center,
       weekStartDate: startOfWeek,
     };
   }, [currentWeekDate]);

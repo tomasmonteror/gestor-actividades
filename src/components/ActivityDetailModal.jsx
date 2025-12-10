@@ -147,12 +147,14 @@ const ActivityDetailModal = ({ activity, onClose }) => {
             </span>
           </div>
 
-          <div style={detailRowStyle}>
-            <ArrowBigRightDash style={{ ...iconStyle, color: "#f1b253ff" }} />
-            <span>
-              Profesorado acompañante: {activity.profesorAcompanante || "N/A"}
-            </span>
-          </div>
+          {!!(activity.profesorAcompanante && activity.profesorAcompanante.trim()) && (                   
+            <div style={detailRowStyle}>
+              <ArrowBigRightDash style={{ ...iconStyle, color: "#f1b253ff" }} />
+              <span>
+                Profesorado acompañante: {activity.profesorAcompanante || "N/A"}
+              </span>
+            </div>
+          )}
 
           <div style={detailRowStyle}>
             <MapPin style={{ ...iconStyle, color: "#dc2626" }} />

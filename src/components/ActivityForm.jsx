@@ -106,7 +106,7 @@ const ActivityForm = ({ initial = {}, onSubmit, preselectedDate }) => {
     }
     // Si quieres que SIEMPRE copie automáticamente:
     // setFechaFin(fechaInicio);
-  }, [fechaInicio]);
+  }, [fechaInicio, fechaFin]);
 
 
   const submit = (e) => {

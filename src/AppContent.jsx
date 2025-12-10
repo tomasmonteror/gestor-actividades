@@ -134,7 +134,7 @@ function AppContent() {
               onMouseOver={linkHover}
               onMouseOut={linkLeave}
             >
-              Carrusel diario
+              Carrusel
             </NavLink>
           )}
 

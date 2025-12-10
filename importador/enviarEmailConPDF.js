@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 
-async function enviarEmail({ emailOrganizador, titulo }) {
+async function enviarEmailConPDF({ emailOrganizador, pdfPaths }) {
   if (!emailOrganizador) {
     console.log("❌ No se envía email: emailOrganizador vacío.");
     return;
@@ -18,17 +18,23 @@ async function enviarEmail({ emailOrganizador, titulo }) {
     }
   });
 
+  // pdfPaths DEBE SER UN ARRAY DE STRINGS
+  const attachments = pdfPaths.map(path => ({
+    filename: path.split("/").pop(),  // nombre del archivo
+    path: path                        // ruta completa
+  }));
+
   const mailOptions = {
     from: '"IES Augustóbriga" <tmonteror04@educarex.es>',
     to: emailOrganizador,
-    cc: "mrodriguezs105@educarex.es",
-    subject: "IES Augustóbriga - Publicación de nueva actividad.",
+    subject: "IES Augustóbriga - Organización de nueva actividad.",
     text: `    Buenos días.
 
-    Se ha dado de alta en el Gestor de actividades una nueva actividad extraescolar o complementaria con título ${titulo}. 
-    A partir de ahora estará disponible en http://reservas/actividades/web/tablero y se visualizará en la TV de la sala de profesores cuando estemos en la semana de su realización.
-    
-    Un saludo.`
+    Se ha dado de alta una nueva actividad extraescolar o complementaria.
+    Para facilitar la gestión administrativa, se adjunta la autorización lista para imprimir y repartir entre el alumnado. También se adjunta el Anexo I que se debe terminar de cumplimentar.
+
+    Un saludo.`,
+    attachments
   };
 
   try {
@@ -39,4 +45,4 @@ async function enviarEmail({ emailOrganizador, titulo }) {
   }
 }
 
-module.exports = enviarEmail;
+module.exports = enviarEmailConPDF;

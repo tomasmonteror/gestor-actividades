@@ -1,9 +1,11 @@
 const { google } = require("googleapis");
 const admin = require("firebase-admin");
 
-const generarAutorizacionPDF = require("./generarAutorizacion");
-const generarAnexoPDF = require("./generarAnexo");
-const enviarEmailConPDF = require("./enviarEmail");
+//const generarAutorizacionPDF = require("./generarAutorizacion");
+//const generarAnexoPDF = require("./generarAnexo");
+//const enviarEmailConPDF = require("./enviarEmail");
+
+const enviarEmail = require("./enviarEmail");
 
 // Inicializa Firebase Admin SDK
 admin.initializeApp({
@@ -39,7 +41,7 @@ async function importarDeHoja() {
 
   // Cambia por tu ID de hoja y rango
   const spreadsheetId = "1ZGF0gM6zAZmlKY52jdMZeCDnyZ0aBEBbVxmJ4WCU7vc";
-  const range = "Actividades25-26!A2:J"; // columna A a J, desde fila 2
+  const range = "Actividades25-26!A2:K"; // columna A a K, desde fila 2
 
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId,
@@ -56,22 +58,23 @@ async function importarDeHoja() {
   let duplicateCount = 0;
 
   for (const row of rows) {
-    const rowPadded = Array(10).fill("").map((_, i) => row[i] || "");
+    const rowPadded = Array(11).fill("").map((_, i) => row[i] || "");
     const [
-      fecha,
+      fechaInicio,
+      fechaFin,
       horaInicio,
       horaFin,
       titulo,
       lugar,
       departamento,
+      nombreOrganizador,
       emailOrganizador,
       grupos,
-      profesorAcompanante,
-      costeActividad
+      profesorAcompanante
     ] = rowPadded;
 
-    const inicioIso = combineDateAndTime(convFecha(fecha), convHora(horaInicio));
-    const finIso = combineDateAndTime(convFecha(fecha), convHora(horaFin));
+    const inicioIso = combineDateAndTime(convFecha(fechaInicio), convHora(horaInicio));
+    const finIso = combineDateAndTime(convFecha(fechaFin), convHora(horaFin));
 
     const existingQuery = db.collection("actividades")
       .where("inicio_iso", "==", inicioIso)
@@ -97,15 +100,15 @@ async function importarDeHoja() {
         inicio_iso: inicioIso,
         fin_iso: finIso,
         departamento,
+        nombreOrganizador,
         emailOrganizador,
-        coste: costeActividad || "0",
-        estado: "visada",
+        tipo: "complementaria",
         teacherId: "importado-script"
       });
       importedCount++;
       console.log("Importada:", titulo, inicioIso, lugar);
 
-      // Procesar PDF + envío email
+      // Procesar envío email
       await procesarNuevaActividad({ 
         id: newDoc.id,
         titulo,
@@ -115,7 +118,7 @@ async function importarDeHoja() {
         inicio_iso: inicioIso,
         fin_iso: finIso,
         profesorAcompanante: profesorAcompanante,
-        coste: costeActividad,
+        nombreOrganizador,
         emailOrganizador
       });
     } catch (e) {
@@ -130,6 +133,7 @@ async function importarDeHoja() {
 async function procesarNuevaActividad(actividad) {
   
   // Ruta donde guardar los PDF
+  /*
   const autorizacionPdfFile = `/opt/importador-actividades/autorizaciones/${actividad.titulo}-autorizacion.pdf`;
   const anexoPdfFile = `/opt/importador-actividades/anexosI/${actividad.titulo}-anexoI.pdf`;
   
@@ -148,9 +152,10 @@ async function procesarNuevaActividad(actividad) {
     coste: actividad.coste || "0",
     salida: autorizacionPdfFile
   });
+  */
 
   // Generar anexo en PDF
-  generarAnexoPDF({
+  /*generarAnexoPDF({
     titulo: actividad.titulo,
     departamento: actividad.departamento,
     lugar: actividad.nombreLugar,
@@ -166,13 +171,20 @@ async function procesarNuevaActividad(actividad) {
     coste: actividad.coste || "0",
     salida: anexoPdfFile
   });
+  
 
   // Enviar email al organizador
   await enviarEmailConPDF({
-    emailOrganizador: actividad.emailOrganizador
-    //, pdfPaths: [autorizacionPdfFile, anexoPdfFile]
+    emailOrganizador: actividad.emailOrganizador, pdfPaths: [autorizacionPdfFile, anexoPdfFile]
   });
+  */
 
+   // Enviar email al organizador
+  await enviarEmail({
+    emailOrganizador: actividad.emailOrganizador,
+    titulo: actividad.titulo
+  });
+  
 }
 
 importarDeHoja();

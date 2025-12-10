@@ -1,7 +1,7 @@
 // src/components/Board.jsx
 import React from "react";
 import { Link } from 'react-router-dom';
-import { Clock, UserCheck, ArrowBigRightDash, Users, Edit, Trash2 } from 'lucide-react';
+import { Clock, ArrowBigRightDash, Users, Edit, Trash2 } from 'lucide-react';
 import { useEffect } from "react";
 
 const Board = ({

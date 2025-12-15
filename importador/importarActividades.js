@@ -1,17 +1,19 @@
 const { google } = require("googleapis");
 const admin = require("firebase-admin");
 
-//const generarAutorizacionPDF = require("./generarAutorizacion");
-//const generarAnexoPDF = require("./generarAnexo");
-//const enviarEmailConPDF = require("./enviarEmail");
-
 const enviarEmail = require("./enviarEmail");
 
-// Inicializa Firebase Admin SDK
+// Firebase
 admin.initializeApp({
-  credential: admin.credential.cert(require("/opt/importador-actividades/firebase-service-account.json")),
+  credential: admin.credential.cert(
+    require("/opt/importador-actividades/firebase-service-account.json")
+  ),
 });
 const db = admin.firestore();
+
+/* =========================
+   Utilidades
+========================= */
 
 function combineDateAndTime(date, time) {
   if (!date || !time) return "";
@@ -21,7 +23,7 @@ function combineDateAndTime(date, time) {
 function convFecha(fechaExcel) {
   if (!fechaExcel) return "";
   const [d, m, y] = fechaExcel.split("/");
-  return `${y.padStart(4, '20')}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+  return `${y.padStart(4, "20")}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
 }
 
 function convHora(horaExcel) {
@@ -29,6 +31,38 @@ function convHora(horaExcel) {
   const [h, m] = horaExcel.split(":");
   return `${h.padStart(2, "0")}:${m}`;
 }
+
+function tieneCamposObligatorios(row) {
+  const [
+    fechaInicio,
+    fechaFin,
+    horaInicio,
+    horaFin,
+    titulo,
+    lugar,
+    departamento,
+    nombreOrganizador,
+    emailOrganizador,
+    grupos,
+  ] = row;
+
+  return [
+    fechaInicio,
+    fechaFin,
+    horaInicio,
+    horaFin,
+    titulo,
+    lugar,
+    departamento,
+    nombreOrganizador,
+    emailOrganizador,
+    grupos,
+  ].every(v => typeof v === "string" && v.trim() !== "");
+}
+
+/* =========================
+   Importación
+========================= */
 
 async function importarDeHoja() {
   const auth = new google.auth.GoogleAuth({
@@ -39,9 +73,8 @@ async function importarDeHoja() {
   const client = await auth.getClient();
   const sheets = google.sheets({ version: "v4", auth: client });
 
-  // Cambia por tu ID de hoja y rango
   const spreadsheetId = "1ZGF0gM6zAZmlKY52jdMZeCDnyZ0aBEBbVxmJ4WCU7vc";
-  const range = "Actividades25-26!A2:K"; // columna A a K, desde fila 2
+  const range = "Actividades25-26!A2:K";
 
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId,
@@ -56,9 +89,18 @@ async function importarDeHoja() {
 
   let importedCount = 0;
   let duplicateCount = 0;
+  let skippedCount = 0;
 
   for (const row of rows) {
     const rowPadded = Array(11).fill("").map((_, i) => row[i] || "");
+
+    // Validación obligatoria
+    if (!tieneCamposObligatorios(rowPadded)) {
+      skippedCount++;
+      console.log("❌ Actividad incompleta. No se importa:", rowPadded[4]);
+      continue;
+    }
+
     const [
       fechaInicio,
       fechaFin,
@@ -70,23 +112,42 @@ async function importarDeHoja() {
       nombreOrganizador,
       emailOrganizador,
       grupos,
-      profesorAcompanante
+      profesorAcompanante,
     ] = rowPadded;
 
-    const inicioIso = combineDateAndTime(convFecha(fechaInicio), convHora(horaInicio));
-    const finIso = combineDateAndTime(convFecha(fechaFin), convHora(horaFin));
+    if (!emailOrganizador.includes("@")) {
+      skippedCount++;
+      console.log("❌ Email inválido:", emailOrganizador);
+      continue;
+    }
 
-    const existingQuery = db.collection("actividades")
+    const inicioIso = combineDateAndTime(
+      convFecha(fechaInicio),
+      convHora(horaInicio)
+    );
+    const finIso = combineDateAndTime(
+      convFecha(fechaFin),
+      convHora(horaFin)
+    );
+
+    if (!inicioIso || !finIso) {
+      skippedCount++;
+      console.log("❌ Fechas/horas inválidas:", titulo);
+      continue;
+    }
+
+    // Duplicados
+    const existingSnap = await db
+      .collection("actividades")
       .where("inicio_iso", "==", inicioIso)
       .where("titulo", "==", titulo)
       .where("nombreLugar", "==", lugar)
-      .limit(1);
-
-    const existingSnap = await existingQuery.get();
+      .limit(1)
+      .get();
 
     if (!existingSnap.empty) {
       duplicateCount++;
-      console.log("Duplicada, NO se importa:", titulo, inicioIso, lugar);
+      console.log("⏩ Duplicada, no se importa:", titulo);
       continue;
     }
 
@@ -103,88 +164,26 @@ async function importarDeHoja() {
         nombreOrganizador,
         emailOrganizador,
         tipo: "complementaria",
-        teacherId: "importado-script"
+        teacherId: "importado-script",
       });
-      importedCount++;
-      console.log("Importada:", titulo, inicioIso, lugar);
 
-      // Procesar envío email
-      await procesarNuevaActividad({ 
-        id: newDoc.id,
+      importedCount++;
+      console.log("✅ Importada:", titulo);
+
+      // Envío de email SOLO si todo está OK
+      await enviarEmail({
+        emailOrganizador,
         titulo,
-        departamento,
-        nombreGrupo: grupos,
-        nombreLugar: lugar,
-        inicio_iso: inicioIso,
-        fin_iso: finIso,
-        profesorAcompanante: profesorAcompanante,
-        nombreOrganizador,
-        emailOrganizador
       });
     } catch (e) {
-      console.error("Error importando:", titulo, e);
+      console.error("🔥 Error importando:", titulo, e);
     }
   }
-  console.log(
-    `Importación terminada. Actividades importadas: ${importedCount}, Actividades duplicadas y no añadidas: ${duplicateCount}`
-  );
-}
 
-async function procesarNuevaActividad(actividad) {
-  
-  // Ruta donde guardar los PDF
-  /*
-  const autorizacionPdfFile = `/opt/importador-actividades/autorizaciones/${actividad.titulo}-autorizacion.pdf`;
-  const anexoPdfFile = `/opt/importador-actividades/anexosI/${actividad.titulo}-anexoI.pdf`;
-  
-  // Generar autorización en PDF
-  generarAutorizacionPDF({
-    titulo: actividad.titulo,
-    departamento: actividad.departamento,
-    lugar: actividad.nombreLugar,
-    fecha: new Date(actividad.inicio_iso).toLocaleDateString("es-ES"),
-    horaInicio: new Date(actividad.inicio_iso).toLocaleTimeString("es-ES", {
-      hour: "2-digit", minute: "2-digit"
-    }),
-    horaFin: new Date(actividad.fin_iso).toLocaleTimeString("es-ES", {
-      hour: "2-digit", minute: "2-digit"
-    }),
-    coste: actividad.coste || "0",
-    salida: autorizacionPdfFile
-  });
-  */
-
-  // Generar anexo en PDF
-  /*generarAnexoPDF({
-    titulo: actividad.titulo,
-    departamento: actividad.departamento,
-    lugar: actividad.nombreLugar,
-    grupos: actividad.nombreGrupo,
-    fecha: new Date(actividad.inicio_iso).toLocaleDateString("es-ES"),
-    horaInicio: new Date(actividad.inicio_iso).toLocaleTimeString("es-ES", {
-      hour: "2-digit", minute: "2-digit"
-    }),
-    horaFin: new Date(actividad.fin_iso).toLocaleTimeString("es-ES", {
-      hour: "2-digit", minute: "2-digit"
-    }),
-    profesorAcompanante: actividad.profesorAcompanante,
-    coste: actividad.coste || "0",
-    salida: anexoPdfFile
-  });
-  
-
-  // Enviar email al organizador
-  await enviarEmailConPDF({
-    emailOrganizador: actividad.emailOrganizador, pdfPaths: [autorizacionPdfFile, anexoPdfFile]
-  });
-  */
-
-   // Enviar email al organizador
-  await enviarEmail({
-    emailOrganizador: actividad.emailOrganizador,
-    titulo: actividad.titulo
-  });
-  
+  console.log("===== RESUMEN =====");
+  console.log("Importadas:", importedCount);
+  console.log("Duplicadas:", duplicateCount);
+  console.log("Saltadas por error:", skippedCount);
 }
 
 importarDeHoja();

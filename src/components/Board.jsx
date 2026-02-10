@@ -1,7 +1,7 @@
 // src/components/Board.jsx
 import React from "react";
 import { Link } from 'react-router-dom';
-import { Clock, ArrowBigRightDash, Users, Edit, Trash2 } from 'lucide-react';
+import { Clock, MapPin, ArrowBigRightDash, Users, Edit, Trash2 } from 'lucide-react';
 import { useEffect } from "react";
 
 const Board = ({
@@ -203,6 +203,11 @@ useEffect(() => {
                               <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#4f46e5' }} />
                               {/* Grupo: */}
                               {act.nombreGrupo || "N/A"}
+                            </div>
+                            
+                            <div>
+                              <MapPin style={{ width: '12px', height: '12px', marginRight: '4px', color: '#dc2626' }} />
+                              {act.nombreLugar || "N/A"}
                             </div>
                             {/*<div >
                               <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#f50b3eff' }} />

@@ -1,6 +1,6 @@
 // src/components/DailyCarousel.jsx
 import React, { useEffect, useMemo, useState } from "react";
-import { Clock, ArrowBigRightDash, Users } from 'lucide-react';
+import { Clock, ArrowBigRightDash, Users, MapPin } from 'lucide-react';
 
 function getStartOfWeek(date) {
   const d = new Date(date);
@@ -266,6 +266,11 @@ const DailyCarousel = ({
                         <div>
                           <Users style={{ width: '12px', height: '12px', marginRight: '4px', color: '#4f46e5' }} />
                           {act.nombreGrupo || "N/A"}
+                        </div>
+                        
+                        <div>
+                          <MapPin style={{ width: '12px', height: '12px', marginRight: '4px', color: '#dc2626' }} />
+                          {act.nombreLugar || "N/A"}
                         </div>
                         {!!(act.profesorAcompanante && act.profesorAcompanante.trim()) && (
                           <div>

@@ -2,6 +2,8 @@
 
 # credentials
 importador/credentials.json
+importador/firebase-service-account.json
+
 # dependencies
 /node_modules
 /.pnp

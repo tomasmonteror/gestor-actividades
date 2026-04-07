@@ -13,15 +13,15 @@ async function enviarEmail({ emailOrganizador, titulo }) {
     port: 465,
     secure: true,
     auth: {
-      user: "tmonteror04@educarex.es",
+      user: "MI_USUARIO@CORREO.es",
       pass: "bkni kggq czrn ympn" // OJO: contraseña de aplicación
     }
   });
 
   const mailOptions = {
-    from: '"IES Augustóbriga" <tmonteror04@educarex.es>',
+    from: '"IES Augustóbriga" MI_USUARIO@CORREO.es>',
     to: emailOrganizador,
-    cc: "mrodriguezs105@educarex.es",
+    cc: "ORGANIZADORA@CORREO.es",
     subject: "IES Augustóbriga - Publicación de nueva actividad.",
     text: `    Buenos días.
 

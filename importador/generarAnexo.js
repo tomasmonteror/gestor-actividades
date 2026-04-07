@@ -30,7 +30,7 @@ function generarAnexo({
 
   // Texto IES "Augustóbriga"
   doc.font("Helvetica-Bold").fontSize(16);
-  doc.text('IES "Augustóbriga"', 50, 40);
+  doc.text('IES "NOMBRE"', 50, 40);
 
   // Imagen esquina superior derecha
   try {
@@ -48,11 +48,11 @@ function generarAnexo({
   doc.moveDown(1.2);
 
   doc.font("Helvetica").fontSize(11);
-  doc.text("IES AUGUSTÓBRIGA");
-  doc.text("C/Antonio Concha, 71");
-  doc.text("10300 NAVALMORAL DE LA MATA (Cáceres)");
-  doc.text("Telf. 927 01 68 90 – Fax. 927 01 68 92");
-  doc.text("E-mail: ies.augustobriga@edu.juntaextremadura.net");
+  doc.text("IES");
+  doc.text("C/Antonio , 71");
+  doc.text(" NAVALMORAL");
+  doc.text("Telf. 927  – Fax. 927");
+  doc.text("E-mail: CORREO_INSTITUTO@CORREO.net");
 
   doc.moveDown(1.5);
 
@@ -115,19 +115,19 @@ function generarAnexo({
   doc.moveDown(1.2);
 
   // Fecha inferior
-  doc.text(`En Navalmoral de la Mata, ${fechaActual}`);
+  doc.text(`En Navalmoral, ${fechaActual}`);
   doc.moveDown(2);
 
   // Firmas
-  doc.text(`Vº. Bº.: Marta Víctor Vega                                   Fdo.: ____________________________`);
-  doc.text("            Directora                                                           Coordinador/a de la actividad");
+  doc.text(`Vº. Bº.: M                                   Fdo.: ____________________________`);
+  doc.text("            Directora                                         Coordinador/a de la actividad");
 
   doc.moveDown(2.5);
 
   // Inspectora
-  doc.text(`DÑA. FÁTIMA MURCIANO RUBIA – INSPECTORA DE EDUCACIÓN`, { align: "center" });
+  doc.text(`DÑA.  – INSPECTORA DE EDUCACIÓN`, { align: "center" });
   doc.font("Helvetica")
-     .text("DELEGACIÓN PROVINCIAL DE EDUCACIÓN - CÁCERES", { align: "center" });
+     .text("DELEGACIÓN PROVINCIAL DE EDUCACIÓN - ", { align: "center" });
 
   doc.end();
   console.log("ANEXO I generado:", salida);

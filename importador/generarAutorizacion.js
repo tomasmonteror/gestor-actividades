@@ -42,11 +42,11 @@ function generarAutorizacionPDF({
     } catch (e) {}
 
     doc.font("Helvetica-Bold").fontSize(10);
-    doc.text("IES AUGUSTÓBRIGA", 150, 0);
+    doc.text("IES NOMB", 150, 0);
     doc.font("Helvetica").fontSize(9);
-    doc.text("C/ Antonio Concha, 71", 150, 14);
-    doc.text("10300 Navalmoral de la Mata (Cáceres)", 150, 26);
-    doc.text("Telf.- 927 016890", 150, 38);
+    doc.text("C/ Antonio", 150, 14);
+    doc.text("Navalmoral", 150, 26);
+    doc.text("Telf.- 927 ", 150, 38);
 
     doc.moveDown(3);
 
@@ -85,7 +85,7 @@ function generarAutorizacionPDF({
     doc.moveDown(1.2);
 
     // Fecha actual
-    doc.text(`Navalmoral de la Mata, a ${fechaActual}.`);
+    doc.text(`Navalmoral, a ${fechaActual}.`);
 
     doc.moveDown(2.2);
 
